@@ -99,7 +99,7 @@ def packet_decode(
     packet: int, rail_switch: str, halls_state: dict[str, int]
 ) -> tuple[str, dict[str, int]]:
     function = FUNCTIONS_SENT_DECODING[packet >> 1 & 0b11]
-    if function == GET_RAIL_SWITCH:
+    if function == SET_RAIL_SWITCH:
         rail_switch = RAIL_SWITCH_STATES_DECODING[packet >> 3 & 0b1]
     elif function == GET_HALL:
         halls_state = {
@@ -116,55 +116,60 @@ def emplacement_turn_red(train_position: str) -> None:
     for emplacement in MAIN_POSITIONS:
         if emplacement != train_position:
             packet = packet_encode_set_led(emplacement, RED)
+            time.sleep(0.5)
             bus.write_byte(addr, packet)
 
 
 # SNCF requirement: all lights are green at the beginning/in the end
 for emplacement in MAIN_POSITIONS:
     packet = packet_encode_set_led(emplacement, GREEN)
+    time.sleep(0.5)
     bus.write_byte(addr, packet)
 
-
 # Objective
+
 OBJECTIVE = [MAIN_TRACK, STRAIGHT_TRACK]
+# OBJECTIVE = [MAIN_TRACK, DIVERGING_TRACK]
+
 train_position = OBJECTIVE[0]
+# need to verify if objective is correct
+
 
 # Init
 emplacement_turn_red(train_position)
 bus.write_byte(addr, packet_encode_get_rail_switch())
 time.sleep(0.5)
 packet = bus.read_byte(addr)
-rail_switch, halls_state = packet_decode(packet, rail_switch, halls_state)
 
+rail_switch, halls_state = packet_decode(packet, rail_switch, halls_state)
+print("leds init finished", rail_switch, halls_state)
 
 if train_position == MAIN_TRACK:
     if OBJECTIVE[1] == STRAIGHT_TRACK and rail_switch != STRAIGHT_TRACK:
         bus.write_byte(addr, packet_encode_set_rail_switch(STRAIGHT_TRACK))
+        time.sleep(3)
     elif OBJECTIVE[1] == DIVERGING_TRACK and rail_switch != DIVERGING_TRACK:
         bus.write_byte(addr, packet_encode_set_rail_switch(DIVERGING_TRACK))
-    else:
-        raise ValueError("OBJECTIVE is impossible")
 
 elif train_position == STRAIGHT_TRACK:
     if OBJECTIVE[1] == MAIN_TRACK and rail_switch != STRAIGHT_TRACK:
         bus.write_byte(addr, packet_encode_set_rail_switch(STRAIGHT_TRACK))
-    else:
-        raise ValueError("OBJECTIVE is impossible")
 
 elif train_position == DIVERGING_TRACK:
     if OBJECTIVE[1] == MAIN_TRACK and rail_switch != DIVERGING_TRACK:
         bus.write_byte(addr, packet_encode_set_rail_switch(DIVERGING_TRACK))
-    else:
-        raise ValueError("OBJECTIVE is impossible")
 
+rail_switch = OBJECTIVE[1]
+print("rail_switch init finished")
 
 while True:
     time.sleep(1)  # in order to not spam slave
     bus.write_byte(addr, packet_encode_get_hall())
     time.sleep(0.5)
     packet = bus.read_byte(addr)
+    print(bin(packet))
     rail_switch, halls_state = packet_decode(packet, rail_switch, halls_state)
-
+    print(rail_switch, halls_state)
     # if train is not first detected by its first position raise error
     if halls_state[OBJECTIVE[0]] == 0:
         for emplacement, state in halls_state.items():
