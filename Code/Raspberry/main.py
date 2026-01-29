@@ -132,6 +132,7 @@ train_position = OBJECTIVE[0]
 # Init
 emplacement_turn_red(train_position)
 bus.write_byte(addr, packet_encode_get_rail_switch())
+time.sleep(0.5)
 packet = bus.read_byte(addr)
 rail_switch, halls_state = packet_decode(packet, rail_switch, halls_state)
 
@@ -158,8 +159,9 @@ elif train_position == DIVERGING_TRACK:
 
 
 while True:
-    time.sleep(0.25)  # in order to not spam slave
+    time.sleep(1)  # in order to not spam slave
     bus.write_byte(addr, packet_encode_get_hall())
+    time.sleep(0.5)
     packet = bus.read_byte(addr)
     rail_switch, halls_state = packet_decode(packet, rail_switch, halls_state)
 
