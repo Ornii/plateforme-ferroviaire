@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static',filename='styles/styles.css') }}"
+        />
+
+        <script language="javascript">
+            function refresh_connected_clients() {
+                var url = "/api/clients";
+                var parent = document.getElementById("connected-clients");
+                fetch(url, { method: "GET" })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        add_clients(parent, data);
+                        remove_clients(parent, data);
+                    });
+            }
+
+            function add_clients(parent, data) {
+                const client_ids = Object.values(data);
+                const li_items = Array.from(
+                    parent.getElementsByTagName("li"),
+                ).map((li) => li.textContent);
+
+                for (const client_id of client_ids) {
+                    if (!li_items.includes(client_id)) {
+                        const li = document.createElement("li");
+                        const a = document.createElement("a");
+
+                        a.textContent = client_id;
+                        a.href = "/clients/" + client_id;
+                        a.style.cursor = "pointer";
+
+                        li.appendChild(a);
+                        parent.appendChild(li);
+                    }
+                }
+            }
+
+            function remove_clients(parent, data) {
+                const values = Object.values(data);
+                const li_items = Array.from(parent.getElementsByTagName("li"));
+                for (const li of li_items) {
+                    if (!values.includes(li.textContent)) {
+                        parent.removeChild(li);
+                    }
+                }
+            }
+
+            setInterval(refresh_connected_clients, 1000);
+        </script>
+    </head>
+
+    <body>
+        Connected clients:
+        <ul id="connected-clients"></ul>
+    </body>
+</html>

@@ -1,0 +1,52 @@
+.circle_up {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-color: black;
+    border-style: solid;
+}
+
+.circle_up.green {
+    background-color: green;
+}
+
+.circle_up.gray {
+    background-color: gray;
+}
+
+.circle_up.init {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+.circle_up.init:after {
+    content: "loading...";
+}
+
+.circle_down {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border-color: black;
+    border-style: solid;
+}
+
+.circle_down.red {
+    background-color: red;
+}
+
+.circle_down.gray {
+    background-color: gray;
+}
+
+.circle_down.init {
+    border-color: black;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+.circle_down.init:after {
+    content: "loading...";
+}

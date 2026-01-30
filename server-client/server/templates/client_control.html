@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static',filename='styles/styles.css') }}"
+        />
+
+        <script language="javascript">
+            const CLIENT_ID = "{{ client_id }}";
+            function change_state_led(green, red) {
+                if (green == 0) {
+                    circle_up_led_color.className = "circle_up gray";
+                } else if (green == 1) {
+                    circle_up_led_color.className = "circle_up green";
+                } else {
+                    console.log("Wrong argument of change_state_led");
+                }
+
+                if (red == 0) {
+                    circle_down_led_color.className = "circle_down gray";
+                } else if (red == 1) {
+                    circle_down_led_color.className = "circle_down red";
+                } else {
+                    console.log("Wrong argument of change_state_led");
+                }
+            }
+
+            async function refresh_state_led() {
+                const url = "/api/clients/" + CLIENT_ID + "/get_state";
+                const data = await fetch(url, { method: "GET" });
+                const response = await data.json();
+                change_state_led(
+                    response.green_led_state,
+                    response.red_led_state,
+                );
+            }
+
+            function define_state_led(green, red) {
+                // -1: change nothing to current state
+                const url = "/api/clients/" + CLIENT_ID + "/define_state";
+
+                if (
+                    (green == 0 || green == 1 || green == -1) &&
+                    (red == 0 || red == 1 || red == -1)
+                ) {
+                    const message = {
+                        green_led_state: green,
+                        red_led_state: red,
+                    };
+                    fetch(url, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(message),
+                    });
+                } else {
+                    console.log("Wrong argument of define_state_led");
+                }
+            }
+
+            function negation_int(x) {
+                if (x == 1) {
+                    return 0;
+                }
+                return 1;
+            }
+
+            async function red_led_button() {
+                var url = "/api/clients/" + CLIENT_ID + "/get_state";
+                const data = await fetch(url, { method: "GET" });
+                const response = await data.json();
+                const message = {
+                    green_led_state: -1,
+                    red_led_state: negation_int(response.red_led_state),
+                };
+                var url = "/api/clients/" + CLIENT_ID + "/define_state";
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(message),
+                });
+            }
+
+            async function green_led_button() {
+                var url = "/api/clients/" + CLIENT_ID + "/get_state";
+                const data = await fetch(url, { method: "GET" });
+                const response = await data.json();
+                const message = {
+                    green_led_state: negation_int(response.green_led_state),
+                    red_led_state: -1,
+                };
+                var url = "/api/clients/" + CLIENT_ID + "/define_state";
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(message),
+                });
+            }
+
+            async function invert_led_state() {
+                var url = "/api/clients/" + CLIENT_ID + "/get_state";
+                const data = await fetch(url, { method: "GET" });
+                const response = await data.json();
+                const message = {
+                    green_led_state: negation_int(response.green_led_state),
+                    red_led_state: negation_int(response.red_led_state),
+                };
+                var url = "/api/clients/" + CLIENT_ID + "/define_state";
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(message),
+                });
+            }
+
+            setInterval(refresh_state_led, 750);
+        </script>
+    </head>
+
+    <body>
+        <input type="button" onclick="green_led_button()" value="Green Light" />
+
+        <input type="button" onclick="red_led_button()" value="Red Light" />
+        <input
+            type="button"
+            onclick="invert_led_state()"
+            value="Invert Light"
+        />
+
+        <div id="circle_up_led_color" class="circle_up init"></div>
+        <div id="circle_down_led_color" class="circle_down init"></div>
+    </body>
+</html>

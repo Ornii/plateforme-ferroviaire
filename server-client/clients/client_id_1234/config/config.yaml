@@ -1,0 +1,6 @@
+tcp:
+  server_address: 192.168.1.70 # the address of host, not the address of client
+  id: 1234 # id of client
+led:
+  green_led_init_state: 0 # 0 or 1, state of green led at the beginning
+  red_led_init_state: 0 # 0 or 1, state of red led at the beginning
