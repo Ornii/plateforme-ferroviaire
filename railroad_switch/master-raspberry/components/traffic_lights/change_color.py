@@ -5,6 +5,7 @@ from positions.state import Position
 from traffic_lights.encoding import packet_encode_set_traffic_lights
 from traffic_lights.state import TrafficLightColor
 from traffic_lights.traffic_lights import TrafficLight
+from train.train import Train
 
 
 def change_color(
