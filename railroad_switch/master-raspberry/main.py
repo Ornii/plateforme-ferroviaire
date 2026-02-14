@@ -2,6 +2,7 @@ from communication.arduino import Arduino
 from components.hall_sensors.reload_state import reload_state_hall_sensors
 from components.hall_sensors.state import HallSensorState
 from components.railroad_switch.railroad_switch import RailroadSwitch
+from components.traffic_lights.change_color import all_lights_green
 from init.init import init_setup
 from positions.state import Position
 from train.train import Train
@@ -34,6 +35,7 @@ def main(arduino: Arduino, train: Train, railroad_switch: RailroadSwitch):
             ):
                 train.position = train.objective_position
                 train.is_in_railroad_switch = False
+                all_lights_green(arduino, railroad_switch.traffic_lights)
 
 
 if __name__ == "__main__":

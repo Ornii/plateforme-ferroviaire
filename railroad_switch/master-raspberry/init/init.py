@@ -4,26 +4,10 @@ from components.blade_switch.reload_state import (
     return_state_blade_switch,
 )
 from components.railroad_switch.railroad_switch import RailroadSwitch
-from components.traffic_lights.change_color import change_color
+from components.traffic_lights.change_color import specific_lights_red
 from components.traffic_lights.state import TrafficLightColor
-from components.traffic_lights.traffic_lights import TrafficLight
-from positions.state import Position
 from train.passage_blade_switch import set_blade_switch_with_passage
 from train.train import Train
-
-
-def all_lights_green(arduino: Arduino, traffic_lights: dict[Position, TrafficLight]):
-    # SNCF requirement: all lights are green at the beginning/in the end
-    for position in Position:
-        change_color(arduino, traffic_lights[position], TrafficLightColor.GREEN)
-
-
-def specific_lights_red(
-    arduino: Arduino, train: Train, traffic_lights: dict[Position, TrafficLight]
-):
-    for position in Position:
-        if position != train.position:
-            change_color(arduino, traffic_lights[position], TrafficLightColor.RED)
 
 
 def init_setup(train: Train, arduino: Arduino) -> RailroadSwitch:
