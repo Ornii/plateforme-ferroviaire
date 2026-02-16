@@ -20,27 +20,27 @@ const int hall_sensor_diverging_track = 10;
 int hall_sensor_diverging_track_state = 1;
 
 
-// Rail switch
-const int tension_rail_switch_pin = A0;
-const int servo_rail_switch_pin = 11;
-Servo servo_rail_switch;
-int mesured_tension_rail_switch;
+// Blade switch
+const int tension_blade_switch_pin = A0;
+const int servo_blade_switch_pin = 11;
+Servo servo_blade_switch;
+int mesured_tension_blade_switch;
 
 
 int packet_to_send = 0; // packet which is modified each time the client received a "get" order and then send
 
 enum FunctionCode {
   SET_LED = 0b00,
-  SET_RAIL_SWITCH = 0b01,
-  GET_HALL = 0b10,
-  GET_RAIL_SWITCH = 0b11
+  SET_BLADE_SWITCH = 0b01,
+  GET_HALL_SENSORS = 0b10,
+  GET_BLADE_SWITCH = 0b11
 };
 
 enum TrainPosition {
   MAIN_TRACK = 0b000,
   STRAIGHT_TRACK = 0b001,
   DIVERGING_TRACK = 0b010,
-  RAIL_SWITCH = 0b011     // intermediary position
+  BLADE_SWITCH = 0b011     // intermediary position
 };
 
 enum LightState {
@@ -49,7 +49,7 @@ enum LightState {
   GREEN = 0b11
 };
 
-enum RailSwitchState {
+enum BladeSwitchState {
     RAIL_STRAIGHT = 0b1,
     RAIL_DIVERGING = 0b0
 };
@@ -61,14 +61,14 @@ uint8_t hallsState[3] = {
   0  // DIVERGING_TRACK
 };
 
-RailSwitchState current_rail_switch = RAIL_DIVERGING;
+BladeSwitchState current_blade_switch = RAIL_DIVERGING;
 
 void receiveEvent(int howMany);
 void requestEvent();
 void setLed(int packet);
-void setRailSwitch(int packet);
-void sendHalls();
-void sendRailSwitch();
+void setBladeSwitch(int packet);
+void sendHallSensors();
+void sendBladeSwitch();
 
 
 void setup() {
@@ -92,9 +92,9 @@ void setup() {
   pinMode(red_led_diverging_track, OUTPUT);
   pinMode(hall_sensor_diverging_track, INPUT);
 
-  // Rail switch
-  servo_rail_switch.attach(servo_rail_switch_pin);
-  servo_rail_switch.write(15);  // initial neutral position
+  // Blade switch
+  servo_blade_switch.attach(servo_blade_switch_pin);
+  servo_blade_switch.write(15);  // initial neutral position
 
 
   Serial.begin(9600);
@@ -113,12 +113,12 @@ void receiveEvent(int howMany) {
 
     if (function == SET_LED) {
         setLed(packet);
-    } else if (function == SET_RAIL_SWITCH) {
-        setRailSwitch(packet);
-    } else if (function == GET_RAIL_SWITCH) {
-        sendRailSwitch();
-    } else if (function == GET_HALL) {
-        sendHalls();
+    } else if (function == SET_BLADE_SWITCH) {
+        setBladeSwitch(packet);
+    } else if (function == GET_BLADE_SWITCH) {
+        sendBladeSwitch();
+    } else if (function == GET_HALL_SENSORS) {
+        sendHallSensors();
     }
     }
 }
@@ -162,32 +162,32 @@ void setLed(int packet) {
    }
 }
 
-void setRailSwitch(int packet) {
-    RailSwitchState demand_rail_switch_state = ((packet >> 3) & 0b1);
+void setBladeSwitch(int packet) {
+    BladeSwitchState demand_blade_switch_state = ((packet >> 3) & 0b1);
 
-    if (!(demand_rail_switch_state == current_rail_switch)) {
-        if (demand_rail_switch_state == RAIL_STRAIGHT) {
-            servo_rail_switch.write(15);
-        } else if (demand_rail_switch_state == RAIL_DIVERGING){
-                servo_rail_switch.write(-15);
+    if (!(demand_blade_switch_state == current_blade_switch)) {
+        if (demand_blade_switch_state == RAIL_STRAIGHT) {
+            servo_blade_switch.write(15);
+        } else if (demand_blade_switch_state == RAIL_DIVERGING){
+                servo_blade_switch.write(30);
             }
 
     }
-    current_rail_switch = demand_rail_switch_state;
+    current_blade_switch = demand_blade_switch_state;
 }
 
-void sendHalls() {
+void sendHallSensors() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (GET_HALL <<  1);
+    packet_to_send = packet_to_send | (GET_HALL_SENSORS <<  1);
     packet_to_send = packet_to_send | (hallsState[0] << 5);
     packet_to_send = packet_to_send | (hallsState[1] << 4);
     packet_to_send = packet_to_send | (hallsState[2] << 3);
 }
 
-void sendRailSwitch() {
+void sendBladeSwitch() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (SET_RAIL_SWITCH <<  1);
-    packet_to_send = packet_to_send | (current_rail_switch << 3);
+    packet_to_send = packet_to_send | (GET_BLADE_SWITCH <<  1);
+    packet_to_send = packet_to_send | (current_blade_switch << 3);
 }
 
 
@@ -220,11 +220,11 @@ void loop() {
   hallsState[1] = hall_sensor_straight_track_state ^ 1;
   hallsState[2] = hall_sensor_diverging_track_state ^ 1;
 
-  mesured_tension_rail_switch = analogRead(tension_rail_switch_pin);
-  if (mesured_tension_rail_switch >= 700) {
-      current_rail_switch = RAIL_STRAIGHT;
+  mesured_tension_blade_switch = analogRead(tension_blade_switch_pin);
+  if (mesured_tension_blade_switch >= 700) {
+      current_blade_switch = RAIL_STRAIGHT;
 
   } else {
-      current_rail_switch = RAIL_DIVERGING;
+      current_blade_switch = RAIL_DIVERGING;
   }
 }
