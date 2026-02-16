@@ -11,6 +11,7 @@ def demand_packet_with_get_function(arduino: Arduino, function: Function):
 
 
 def receive_packet_with_get_function(arduino, function: Function) -> int:
+    demand_packet_with_get_function(arduino, function)
     packet = arduino.bus.read_byte(arduino.addr)
     packet_function_value = packet >> 1 & 0b11
 
