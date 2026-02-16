@@ -1,5 +1,5 @@
+from components.traffic_lights.state import TrafficLightColor
 from positions.state import Position
-from traffic_lights.state import TrafficLightColor
 
 
 class TrafficLight:

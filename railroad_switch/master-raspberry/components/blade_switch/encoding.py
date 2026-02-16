@@ -1,4 +1,4 @@
-from blade_switch.state import BladeSwitchPosition
+from components.blade_switch.state import BladeSwitchPosition
 from functions.encoding import packet_encode_with_get_function
 from functions.state import Function
 

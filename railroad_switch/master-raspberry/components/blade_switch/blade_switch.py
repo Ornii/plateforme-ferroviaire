@@ -1,4 +1,4 @@
-from blade_switch.state import BladeSwitchPosition
+from components.blade_switch.state import BladeSwitchPosition
 
 
 class BladeSwitch:

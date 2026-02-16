@@ -1,4 +1,4 @@
-from hall_sensors.state import HallSensorState
+from components.hall_sensors.state import HallSensorState
 from positions.state import Position
 
 

@@ -1,8 +1,8 @@
-from blade_switch.blade_switch import BladeSwitch
-from blade_switch.state import BladeSwitchPosition
-from hall_sensors.hall_sensors import hall_sensors
-from traffic_lights.state import TrafficLightColor
-from traffic_lights.traffic_lights import traffic_lights
+from components.blade_switch.blade_switch import BladeSwitch
+from components.blade_switch.state import BladeSwitchPosition
+from components.hall_sensors.hall_sensors import hall_sensors
+from components.traffic_lights.state import TrafficLightColor
+from components.traffic_lights.traffic_lights import traffic_lights
 
 
 class RailroadSwitch:

@@ -1,5 +1,5 @@
+from components.traffic_lights.state import TrafficLightColor
 from functions.state import Function
-from traffic_lights.state import TrafficLightColor
 from traffic_lights.traffic_lights import TrafficLight
 
 

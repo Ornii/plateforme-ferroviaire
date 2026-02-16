@@ -1,10 +1,10 @@
 from time import sleep
 
 from communication.arduino import Arduino
+from components.traffic_lights.encoding import packet_encode_set_traffic_lights
+from components.traffic_lights.state import TrafficLightColor
+from components.traffic_lights.traffic_lights import TrafficLight
 from positions.state import Position
-from traffic_lights.encoding import packet_encode_set_traffic_lights
-from traffic_lights.state import TrafficLightColor
-from traffic_lights.traffic_lights import TrafficLight
 from train.train import Train
 
 

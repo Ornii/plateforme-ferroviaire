@@ -1,7 +1,7 @@
-from blade_switch.blade_switch import BladeSwitch
-from blade_switch.state import BladeSwitchPosition
 from communication.arduino import Arduino
 from communication.receive import receive_packet_with_get_function
+from components.blade_switch.blade_switch import BladeSwitch
+from components.blade_switch.state import BladeSwitchPosition
 from functions.state import Function
 
 

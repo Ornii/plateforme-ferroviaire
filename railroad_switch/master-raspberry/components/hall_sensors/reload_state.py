@@ -1,8 +1,8 @@
 from communication.arduino import Arduino
 from communication.receive import receive_packet_with_get_function
+from components.hall_sensors.hall_sensors import HallSensor
+from components.hall_sensors.state import HallSensorState
 from functions.state import Function
-from hall_sensors.hall_sensors import HallSensor
-from hall_sensors.state import HallSensorState
 from positions.state import Position
 
 
