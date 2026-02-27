@@ -1,11 +1,11 @@
-from positions.state import Position
+from protocol.railroad_protocol import TrackPosition
 
 
-class Train:
+class TrainState:
     def __init__(
         self,
-        init_position: Position,
-        objective_position: Position,
+        init_position: TrackPosition,
+        objective_position: TrackPosition,
     ):
         self.position = init_position
         self.init_position = init_position
