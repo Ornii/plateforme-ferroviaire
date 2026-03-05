@@ -1,55 +1,73 @@
-Projet de pilotage d’un aiguillage ferroviaire avec :
-- un **Arduino** (esclave I2C) qui pilote LEDs, capteurs Hall et servo,
-- un **Raspberry Pi** (maître I2C) qui exécute la logique de circulation.
+# Plateforme d’aiguillage ferroviaire (Arduino + Raspberry Pi)
+
+Ce module implémente le pilotage d’un aiguillage ferroviaire miniature basé sur une architecture distribuée :
+
+- **Arduino** : contrôle bas niveau des actionneurs et capteurs (servo, LEDs, capteurs Hall).
+- **Raspberry Pi** : logique métier de circulation, routage d’itinéraire et orchestration des échanges I2C.
+
+L’objectif est de séparer clairement la logique temps réel matérielle (microcontrôleur) de la logique de décision (contrôleur Python).
 
 ---
 
-## 1) Architecture du projet
+## Sommaire
+
+1. [Architecture](#architecture)
+2. [Prérequis matériels](#prérequis-matériels)
+3. [Prérequis logiciels](#prérequis-logiciels)
+4. [Installation](#installation)
+5. [Exécution](#exécution)
+6. [Configuration](#configuration)
+7. [Limites connues](#limites-connues)
+
+---
+
+## Architecture
 
 ```text
 railroad_switch/
-├── slave-arduino/
-│   └── main/main.ino
-└── master-raspberry/
-    ├── main.py
+├── arduino_controller/
+│   └── firmware/
+│       └── firmware.ino
+└── raspberry_controller/
+    ├── run_controller.py
+    ├── bootstrap/
     ├── communication/
-    │   └── hall_sensors/
-    │   │   └── encoding.py
-    │   │   └── state.py
-    │   │   └── ...
-    │   └── blade_switch/
-    │   └── ...
-    ├── components/
-    ├── train/
-    └── ...
+    ├── domain/
+    └── infrastructure/
 ```
 
-- `slave-arduino/main/main.ino` : firmware Arduino
-- `master-raspberry/main.py` : script Python côté Raspberry.
+### Responsabilités principales
+
+- `arduino_controller/firmware/firmware.ino` : firmware embarqué Arduino (I2C esclave).
+- `raspberry_controller/run_controller.py` : point d’entrée du contrôleur Raspberry (I2C maître).
+- `raspberry_controller/domain/` : logique métier (état du train, protocole, règles d’aiguillage).
+- `raspberry_controller/infrastructure/` : interfaces matérielles (capteurs, signaux, aiguillage).
 
 ---
 
-## 2) Prérequis matériel
+## Prérequis matériels
 
-- 1 Raspberry Pi (I2C activé)
-- 1 Arduino (addresse I2C `0x08`)
-- Liaison I2C entre Raspberry et Arduino
-- Capteurs Hall + LEDs (rouge/verte) + servo pour l'aiguillage + aiguillage
+- 1 × Raspberry Pi avec interface **I2C activée**
+- 1 × Arduino connecté en I2C
+- Câblage I2C fonctionnel entre Raspberry Pi et Arduino
+- 1 × servo d’aiguillage
+- LEDs de signalisation (ex. rouge/verte)
+- Capteurs Hall pour détection de passage
 
 ---
 
-## 3) Prérequis logiciel
+## Prérequis logiciels
 
-### Arduino
+### Côté Arduino
+
 - Arduino IDE
-- Bibliothèques utilisées par le firmware :
+- Bibliothèques :
   - `Wire`
   - `Servo`
 
-Les bilibothèques sont déjà présentent sur l'IDE Arduiuno.
+### Côté Raspberry Pi
 
-### Raspberry
-- Python 3.10+
+- Python **3.10+**
 - Dépendance Python :
   - `smbus2`
 
@@ -61,38 +79,50 @@ pip install smbus2
 
 ---
 
-## 4) Déploiement et exécution
+## Installation
 
-### Étape A — Charger le firmware Arduino
+### 1) Déployer le firmware Arduino
 
-1. Ouvrir `railroad_switch/slave-arduino/main/main.ino`
-2. Compiler et téléverser sur l’Arduino
+1. Ouvrir `arduino_controller/firmware/firmware.ino` dans l’Arduino IDE.
+2. Compiler le firmware.
+3. Téléverser vers la carte Arduino.
 
-### Étape B — Lancer le programme Raspberry
+### 2) Préparer l’environnement Raspberry Pi
 
-Depuis le dossier `master-raspberry` :
+Depuis le dossier `railroad_switch/` :
 
 ```bash
-cd railroad_switch/master-raspberry
-python3 main.py
+pip install smbus2
 ```
 
-> Important : le code utilise des imports relatifs à ce dossier, donc il faut lancer `main.py` depuis `master-raspberry`.
+---
+
+## Exécution
+
+Depuis `railroad_switch/` :
+
+```bash
+python3 raspberry_controller/run_controller.py
+```
+
+> Recommandation : exécuter la commande depuis la racine `railroad_switch/` pour conserver un contexte d’import cohérent.
 
 ---
 
-## 5) Utilisation
+## Configuration
 
-- Le train a une position initiale (`init_position`) et un objectif (`objective_position`) définis dans `main.py`.
-Ces deux valeurs peuvent être changés, tant qu'elles sont possibles pour un train dans `main.py`.
-- Il est possible de changer l'adresse I2C de l'Arduino dans `main.py`. 
+Les paramètres de circulation (position initiale, objectif, stratégie d’aiguillage, etc.) sont définis dans les modules Python du contrôleur Raspberry (`domain/` et point d’entrée).
 
----
+Selon votre câblage, adaptez notamment :
 
-## 6) Limitations connues
-
-- Le firmware Arduino nécessite un **reflash avant un nouveau passage**.
-- Le projet n’inclut pas encore de gestion d’erreurs avancée (erreurs de communication, validation complète des scénarios de trajet...).
-- Ce dépôt contient des améliorations en cours ; cf TODO dans le code.
+- l’adresse I2C,
+- la cartographie des capteurs,
+- les numéros de broches associés aux signaux et à l’aiguillage.
 
 ---
+
+## Limites connues
+
+- Certains scénarios nécessitent encore une réinitialisation/reprogrammation côté firmware.
+- La gestion d’erreurs I2C et la résilience globale peuvent être renforcées.
+- Le projet est en évolution ; des optimisations sont en cours sur le comportement métier et la robustesse.
