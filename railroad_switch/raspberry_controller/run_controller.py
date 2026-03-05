@@ -1,11 +1,12 @@
 from bootstrap.bootstrap_controller import bootstrap_controller
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from domain.junction_controller import JunctionState
-from domain.packet_protocol import HallDetection, TrackPosition
+from domain.packet_protocol import TrackPosition
+from domain.train_junction_entry import handle_train_entry_detection
+from domain.train_junction_exit import handle_train_exit_detection
 from domain.train_state import TrainState
 from domain.verify_routing import is_routing_right
 from infrastructure.hall_sensors.hall_sensors import refresh_hall_sensors_state
-from infrastructure.signals.signals import set_all_signals_green
 
 arduino = ArduinoI2cBridge(addr=0x08)
 train = TrainState(
@@ -30,24 +31,9 @@ def main(
         refresh_hall_sensors_state(arduino, junction.hall_sensors)
 
         if not train.is_in_junction:
-            for sensor in junction.hall_sensors.values():
-                if sensor.state == HallDetection.TRAIN_WAS_DETECTED:
-                    if sensor.position == train.init_position:
-                        train.is_in_junction = True
-                    else:
-                        raise ValueError("Train is not in its init_position")
+            handle_train_entry_detection(train, junction)
         else:
-            for sensor in junction.hall_sensors.values():
-                if (
-                    sensor.state == HallDetection.TRAIN_WAS_DETECTED
-                    and sensor.position != train.init_position
-                ):
-                    if sensor.position == train.objective_position:
-                        train.position = train.objective_position
-                        train.is_in_junction = False
-                        set_all_signals_green(arduino, junction.signals)
-                    else:
-                        raise ValueError("Train is not in its objective_position")
+            handle_train_exit_detection(arduino, train, junction)
 
 
 if __name__ == "__main__":
