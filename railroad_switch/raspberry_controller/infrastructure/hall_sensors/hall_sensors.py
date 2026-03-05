@@ -9,7 +9,7 @@ from domain.packet_protocol import (
 
 
 class HallSensorState:
-    def __init__(self, position: TrackPosition):
+    def __init__(self, position: TrackPosition) -> None:
         self.position = position
         self.state = HallDetection.TRAIN_NOT_DETECTED  # not detected by default
 

@@ -9,7 +9,7 @@ def handle_train_exit_detection(
     arduino: ArduinoI2cBridge,
     train: TrainState,
     junction: JunctionState,
-):
+) -> None:
     for sensor in junction.hall_sensors.values():
         if (
             sensor.state == HallDetection.TRAIN_WAS_DETECTED

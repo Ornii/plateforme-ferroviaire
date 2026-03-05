@@ -4,7 +4,7 @@ from domain.packet_protocol import FunctionCode, TurnoutPosition
 
 
 class TurnoutState:
-    def __init__(self, init_position: TurnoutPosition):
+    def __init__(self, init_position: TurnoutPosition) -> None:
         self.position: TurnoutPosition = init_position
 
 

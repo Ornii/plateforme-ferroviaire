@@ -6,7 +6,7 @@ class TrainState:
         self,
         init_position: TrackPosition,
         objective_position: TrackPosition,
-    ):
+    ) -> None:
         self.position = init_position
         self.init_position = init_position
         self.objective_position = objective_position

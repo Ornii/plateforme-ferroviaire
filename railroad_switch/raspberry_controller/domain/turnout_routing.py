@@ -12,7 +12,7 @@ from infrastructure.turnout.turnout import TurnoutState
 
 def set_turnout_for_train_passage(
     arduino: ArduinoI2cBridge, train: TrainState, turnout: TurnoutState
-):
+) -> None:
 
     if (
         train.objective_position == TrackPosition.STRAIGHT_TRACK

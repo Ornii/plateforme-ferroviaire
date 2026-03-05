@@ -26,7 +26,7 @@ def main(
     arduino: ArduinoI2cBridge,
     train: TrainState,
     junction: JunctionState,
-):
+) -> None:
     while train.position != train.objective_position:
         refresh_hall_sensors_state(arduino, junction.hall_sensors)
 

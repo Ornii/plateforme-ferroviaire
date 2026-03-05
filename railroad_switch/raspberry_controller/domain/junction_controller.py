@@ -11,7 +11,7 @@ class JunctionState:
         signals_init_color_main_track: SignalColor,
         signals_init_color_straight_track: SignalColor,
         signals_init_color_diverging_track: SignalColor,
-    ):
+    ) -> None:
         self.turnout = TurnoutState(turnout_init_position)
         self.signals = build_signals_map(
             signals_init_color_main_track,

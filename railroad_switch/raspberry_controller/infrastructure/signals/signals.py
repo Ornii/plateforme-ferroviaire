@@ -10,7 +10,7 @@ from domain.train_state import TrainState
 
 
 class SignalState:
-    def __init__(self, init_color: SignalColor, position: TrackPosition):
+    def __init__(self, init_color: SignalColor, position: TrackPosition) -> None:
         self.color = init_color
         self.position = position
 
@@ -46,7 +46,7 @@ def set_signal_color(
 
 def set_all_signals_green(
     arduino: ArduinoI2cBridge, signals: dict[TrackPosition, SignalState]
-):
+) -> None:
     # SNCF requirement: all lights are green at the beginning/in the end
     for position in TrackPosition:
         set_signal_color(arduino, signals[position], SignalColor.GREEN)

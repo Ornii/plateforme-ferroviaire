@@ -3,7 +3,7 @@ from domain.packet_protocol import HallDetection
 from domain.train_state import TrainState
 
 
-def handle_train_entry_detection(train: TrainState, junction: JunctionState):
+def handle_train_entry_detection(train: TrainState, junction: JunctionState) -> None:
     for sensor in junction.hall_sensors.values():
         if sensor.state == HallDetection.TRAIN_WAS_DETECTED:
             if sensor.position == train.init_position:
