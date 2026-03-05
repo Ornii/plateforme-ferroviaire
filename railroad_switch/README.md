@@ -81,21 +81,12 @@ pip install smbus2
 
 ## Installation
 
-### 1) Déployer le firmware Arduino
+### Déployer le firmware Arduino
 
 1. Ouvrir `arduino_controller/firmware/firmware.ino` dans l’Arduino IDE.
 2. Compiler le firmware.
 3. Téléverser vers la carte Arduino.
 
-### 2) Préparer l’environnement Raspberry Pi
-
-Depuis le dossier `railroad_switch/` :
-
-```bash
-pip install smbus2
-```
-
----
 
 ## Exécution
 
@@ -105,7 +96,7 @@ Depuis `railroad_switch/` :
 python3 raspberry_controller/run_controller.py
 ```
 
-> Recommandation : exécuter la commande depuis la racine `railroad_switch/` pour conserver un contexte d’import cohérent.
+> Important : exécuter la commande depuis la racine `railroad_switch/` pour permettre les imports
 
 ---
 
