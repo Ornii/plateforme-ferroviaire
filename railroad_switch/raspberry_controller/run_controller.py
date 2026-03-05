@@ -29,21 +29,25 @@ def main(
     while train.position != train.objective_position:
         refresh_hall_sensors_state(arduino, junction.hall_sensors)
 
-        # TODO: if train is not first detected by the hallsensor located in the first position of train then raise error
-
-        if (
-            junction.hall_sensors[train.init_position].state
-            == HallDetection.TRAIN_WAS_DETECTED
-        ):
-            train.is_in_junction = True
-            # TODO: raise error if train goes to the objective position
-            if (
-                junction.hall_sensors[train.objective_position].state
-                == HallDetection.TRAIN_WAS_DETECTED
-            ):
-                train.position = train.objective_position
-                train.is_in_junction = False
-                set_all_signals_green(arduino, junction.signals)
+        if not train.is_in_junction:
+            for sensor in junction.hall_sensors.values():
+                if sensor.state == HallDetection.TRAIN_WAS_DETECTED:
+                    if sensor.position == train.init_position:
+                        train.is_in_junction = True
+                    else:
+                        raise ValueError("Train is not in its init_position")
+        else:
+            for sensor in junction.hall_sensors.values():
+                if (
+                    sensor.state == HallDetection.TRAIN_WAS_DETECTED
+                    and sensor.position != train.init_position
+                ):
+                    if sensor.position == train.objective_position:
+                        train.position = train.objective_position
+                        train.is_in_junction = False
+                        set_all_signals_green(arduino, junction.signals)
+                    else:
+                        raise ValueError("Train is not in its objective_position")
 
 
 if __name__ == "__main__":
