@@ -3,6 +3,7 @@ from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from domain.junction_controller import JunctionState
 from domain.packet_protocol import HallDetection, TrackPosition
 from domain.train_state import TrainState
+from domain.verify_routing import is_routing_right
 from infrastructure.hall_sensors.hall_sensors import refresh_hall_sensors_state
 from infrastructure.signals.signals import set_all_signals_green
 
@@ -11,8 +12,11 @@ train = TrainState(
     init_position=TrackPosition.MAIN_TRACK,
     objective_position=TrackPosition.DIVERGING_TRACK,
 )
-# TODO: must verify if objective is correct (ie train can go from init_position to objective_position)
 
+if not is_routing_right(train):
+    raise ValueError(
+        "Wrong init_position or objective_position. The routing is impossible."
+    )
 
 junction = bootstrap_controller(train, arduino)
 
