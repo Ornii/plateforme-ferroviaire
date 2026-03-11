@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from domain.junction_controller import JunctionState
 from domain.packet_protocol import HallDetection, Position
 from domain.train_state import TrainState

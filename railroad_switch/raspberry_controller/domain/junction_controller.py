@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from domain.packet_protocol import SignalColor, TurnoutPosition
 from infrastructure.hall_sensors.hall_sensors import build_hall_sensors_map
 from infrastructure.signals.signals import build_signals_map

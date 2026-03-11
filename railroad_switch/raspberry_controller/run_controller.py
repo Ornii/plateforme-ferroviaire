@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from bootstrap.bootstrap_controller import bootstrap_controller
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from domain.junction_controller import JunctionState

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from time import sleep
 
 from communication.arduino_i2c_bridge import ArduinoI2cBridge

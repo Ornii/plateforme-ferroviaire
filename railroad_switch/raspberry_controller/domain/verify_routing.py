@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from domain.packet_protocol import Position
 from domain.train_state import TrainState
 

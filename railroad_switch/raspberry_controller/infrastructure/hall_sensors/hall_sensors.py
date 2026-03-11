@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from communication.request_loop import request_packet_until_matching_function
 from domain.packet_protocol import (
