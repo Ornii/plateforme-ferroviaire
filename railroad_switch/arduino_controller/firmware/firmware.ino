@@ -1,101 +1,100 @@
 #include <Wire.h>
 #include <Servo.h>
 
-// Main track
-const int green_led_main_track = 2;
-const int red_led_main_track = 3;
-const int hall_sensor_main_track = 4;
-int hall_sensor_main_track_state = 1;
 
-// Straight track
-const int green_led_straight_track = 5;
-const int red_led_straight_track = 6;
-const int hall_sensor_straight_track = 7;
-int hall_sensor_straight_track_state = 1;
-
-// Diverging track
-const int green_led_diverging_track = 8;
-const int red_led_diverging_track = 9;
-const int hall_sensor_diverging_track = 10;
-int hall_sensor_diverging_track_state = 1;
-
-
-// Blade switch
-const int tension_blade_switch_pin = A0;
-const int servo_blade_switch_pin = 11;
-Servo servo_blade_switch;
-int mesured_tension_blade_switch;
-
-
-int packet_to_send = 0; // packet which is modified each time the client received a "get" order and then send
-
-enum FunctionCode {
+enum Function {
     SET_LED = 0b00,
-    SET_BLADE_SWITCH = 0b01,
+    SET_TURNOUT = 0b01,
     GET_HALL_SENSORS = 0b10,
-    GET_BLADE_SWITCH = 0b11
+    GET_TURNOUT = 0b11
 };
 
-enum TrainPosition {
-    MAIN_TRACK = 0b000,
-    STRAIGHT_TRACK = 0b001,
-    DIVERGING_TRACK = 0b010,
-    BLADE_SWITCH = 0b011     // intermediary position
+enum Position {
+    LEAD = 0b00,
+    NORMAL = 0b01,
+    REVERSE = 0b10,
+    FROG = 0b11
 };
 
-enum LightState {
+enum SignalColor {
     RED = 0b00,
     YELLOW = 0b10,
     GREEN = 0b11
 };
 
-enum BladeSwitchState {
-    RAIL_STRAIGHT = 0b1,
-    RAIL_DIVERGING = 0b0
+enum TurnoutPosition {
+    NORMAL = 0b1,
+    REVERSE = 0b0
 };
 
-// Variable which describe the current state of sensor
-// TODO: reset to 0 hallsState when train arrived
-uint8_t hallsState[3] = {
-    0, // MAIN_TRACK
-    0, // STRAIGHT_TRACK
-    0  // DIVERGING_TRACK
+enum HallDetection {
+    TRAIN_NOT_DETECTED = 0b0,
+    TRAIN_WAS_DETECTED = 0b1
 };
 
-BladeSwitchState current_blade_switch = RAIL_DIVERGING;
 
-void receiveEvent(int howMany);
-void requestEvent();
-void setLed(int packet);
-void setBladeSwitch(int packet);
-void sendHallSensors();
-void sendBladeSwitch();
+// Lead Position
+const int green_led_lead_pin = 2;
+const int red_led_lead_pin = 3;
+const int hall_sensor_lead_pin = 4;
+HallDetection hall_sensor_lead_state = TRAIN_NOT_DETECTED;
+
+// Normal Position
+const int green_led_normal_pin = 5;
+const int red_led_normal_pin = 6;
+const int hall_sensor_normal_pin = 7;
+HallDetection hall_sensor_normal_state = TRAIN_NOT_DETECTED;
+
+// Reverse Position
+const int green_led_reverse_pin_pin= 8;
+const int red_led_reverse_pin = 9;
+const int hall_sensor_reverse_pin = 10;
+HallDetection hall_sensor_reverse_state = TRAIN_NOT_DETECTED;
+
+
+// Frog Position
+const int tension_turnout_pin = A0;
+const int servo_turnout_pin = 11;
+Servo servo_turnout;
+int tension_turnout;
+TurnoutPosition turnout_position;
+
+int packet_to_send = 0; // packet which is modified each time the client received a "get" order and then send
+
+
+// TODO: reset to 0 hall_sensors_state when train arrived
+uint8_t hall_sensors_state[3] = {
+    0, // Lead Position
+    0, // Normal Position
+    0  // Reverse Position
+};
 
 
 void setup() {
+    // I2C 
     Wire.begin(0x08);
-
     Wire.onReceive(receiveEvent);
     Wire.onRequest(requestEvent);
 
-    // Main track
-    pinMode(green_led_main_track, OUTPUT);
-    pinMode(red_led_main_track, OUTPUT);
-    pinMode(hall_sensor_main_track, INPUT);
+    // Lead Position
+    pinMode(green_led_lead_pin, OUTPUT);
+    pinMode(red_led_lead_pin, OUTPUT);
+    pinMode(hall_sensor_lead_pin, INPUT);
 
-    // Straight track
-    pinMode(green_led_straight_track, OUTPUT);
-    pinMode(red_led_straight_track, OUTPUT);
-    pinMode(hall_sensor_straight_track, INPUT);
+    // Normal Position
+    pinMode(green_led_normal_pin, OUTPUT);
+    pinMode(red_led_normal_pin, OUTPUT);
+    pinMode(hall_sensor_normal_pin, INPUT);
 
-    // Diverging track
-    pinMode(green_led_diverging_track, OUTPUT);
-    pinMode(red_led_diverging_track, OUTPUT);
-    pinMode(hall_sensor_diverging_track, INPUT);
+    // Reverse Position
+    pinMode(green_led_reverse_pin, OUTPUT);
+    pinMode(red_led_reverse_pin, OUTPUT);
+    pinMode(hall_sensor_reverse_pin, INPUT);
 
-    // Blade switch
-    servo_blade_switch.attach(servo_blade_switch_pin);
-    servo_blade_switch.write(15);  // initial neutral position
+    // Frog Position
+    servo_turnout.attach(servo_turnout_pin);
+    servo_turnout.write(15);  // initial neutral position
+    refreshTurnoutPosition();
 
 }
 
@@ -105,14 +104,14 @@ void receiveEvent(int howMany) {
     while (Wire.available()) {
     int packet = Wire.read();
 
-    FunctionCode function = ((packet >> 1) & 0b11);
+    Function function = ((packet >> 1) & 0b11);
 
     if (function == SET_LED) {
         setLed(packet);
-    } else if (function == SET_BLADE_SWITCH) {
-        setBladeSwitch(packet);
-    } else if (function == GET_BLADE_SWITCH) {
-        sendBladeSwitch();
+    } else if (function == SET_TURNOUT) {
+        setTurnout(packet);
+    } else if (function == GET_TURNOUT) {
+        sendTurnout();
     } else if (function == GET_HALL_SENSORS) {
         sendHallSensors();
     }
@@ -120,55 +119,91 @@ void receiveEvent(int howMany) {
 }
 
 void setLed(int packet) {
-    TrainPosition emplacement = ((packet >> 5) & 0b111);
-    LightState color = ((packet >> 3) & 0b11);
+    Position position = ((packet >> 5) & 0b111);
+    SignalColor color = ((packet >> 3) & 0b11);
 
-    if (emplacement ==  MAIN_TRACK){
+    if (position == LEAD){
 
-        digitalWrite(green_led_main_track, color == GREEN);
-        digitalWrite(red_led_main_track, color == RED);
-
-
-    } else if (emplacement == STRAIGHT_TRACK) {
-
-        digitalWrite(green_led_straight_track, color == GREEN);
-        digitalWrite(red_led_straight_track, color == RED);
-
-    } else if (emplacement == DIVERGING_TRACK) {
+        digitalWrite(green_led_lead_pin, color == GREEN);
+        digitalWrite(red_led_lead_pin, color == RED);
 
 
-        digitalWrite(green_led_diverging_track, color == GREEN);
-        digitalWrite(red_led_diverging_track, color == RED);
+    } else if (position == NORMAL) {
+
+        digitalWrite(green_led_normal_pin, color == GREEN);
+        digitalWrite(red_led_normal_pin, color == RED);
+
+    } else if (position == REVERSE) {
+
+
+        digitalWrite(green_led_reverse_pin, color == GREEN);
+        digitalWrite(red_led_reverse_pin, color == RED);
 
     }
 }
 
-void setBladeSwitch(int packet) {
-    BladeSwitchState demand_blade_switch_state = ((packet >> 3) & 0b1);
+void setTurnout(int packet) {
+    TurnoutPosition demand_turnout_position = ((packet >> 3) & 0b1);
 
-    if (!(demand_blade_switch_state == current_blade_switch)) {
-        if (demand_blade_switch_state == RAIL_STRAIGHT) {
-            servo_blade_switch.write(15);
-        } else if (demand_blade_switch_state == RAIL_DIVERGING){
-                servo_blade_switch.write(30);
+    if (!(demand_turnout_position == turnout_position)) {
+        if (demand_turnout_position == NORMAL) {
+            servo_turnout.write(15);
+        } else if (demand_turnout_position == REVERSE){
+                servo_turnout.write(30);
             }
 
     }
-    current_blade_switch = demand_blade_switch_state;
+    turnout_position = demand_turnout_position;
 }
+
+void refreshTurnoutPosition() {
+    tension_turnout = analogRead(tension_turnout_pin);
+
+    if (tension_turnout >= 700) {
+        turnout_position = NORMAL;
+
+    } else {
+        turnout_position = REVERSE;
+    }
+
+}
+
+void refreshHallSensors() {
+    HallDetection hall_sensor_reverse_state_new = digitalRead(hall_sensor_reverse_pin) ^ 1;
+    HallDetection hall_sensor_normal_state_new = digitalRead(hall_sensor_normal_pin) ^ 1;
+    HallDetection hall_sensor_lead_state_new = digitalRead(hall_sensor_lead_pin) ^ 1;
+
+
+    if (hall_sensor_lead_state_new == TRAIN_WAS_DETECTED)  {
+            hall_sensor_lead_state = TRAIN_WAS_DETECTED;
+        }
+
+    if (hall_sensor_normal_state_new == TRAIN_WAS_DETECTED)  {
+            hall_sensor_normal_state = TRAIN_WAS_DETECTED;
+        }
+    if (hall_sensor_reverse_state_new == TRAIN_WAS_DETECTED)  {
+            hall_sensor_reverse_state = TRAIN_WAS_DETECTED;
+        }
+
+        hall_sensors_state[0] = hall_sensor_lead_state;
+        hall_sensors_state[1] = hall_sensor_normal_state;
+        hall_sensors_state[2] = hall_sensor_reverse_state;
+}
+
+
 
 void sendHallSensors() {
     packet_to_send = 0;
     packet_to_send = packet_to_send | (GET_HALL_SENSORS <<  1);
-    packet_to_send = packet_to_send | (hallsState[0] << 5);
-    packet_to_send = packet_to_send | (hallsState[1] << 4);
-    packet_to_send = packet_to_send | (hallsState[2] << 3);
+    packet_to_send = packet_to_send | (hall_sensors_state[0] << 5);
+    packet_to_send = packet_to_send | (hall_sensors_state[1] << 4);
+    packet_to_send = packet_to_send | (hall_sensors_state[2] << 3);
 }
 
-void sendBladeSwitch() {
+void sendTurnout() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (GET_BLADE_SWITCH <<  1);
-    packet_to_send = packet_to_send | (current_blade_switch << 3);
+    packet_to_send = packet_to_send | (GET_TURNOUT <<  1);
+    packet_to_send = packet_to_send | (turnout_position << 3);
 }
 
 
@@ -180,33 +215,6 @@ void requestEvent() {
 
 void loop() {
     delay(250); // to avoid spamming
-    int hall_sensor_diverging_track_state_new = digitalRead(hall_sensor_diverging_track);
-    int hall_sensor_straight_track_state_new = digitalRead(hall_sensor_straight_track);
-    int hall_sensor_main_track_state_new = digitalRead(hall_sensor_main_track);
-
-
-    if (!(hall_sensor_diverging_track_state_new == hall_sensor_diverging_track_state) && (hall_sensor_diverging_track_state == 1)) {
-        hall_sensor_diverging_track_state = 0;
-    }
-
-    if (!(hall_sensor_straight_track_state_new == hall_sensor_straight_track_state) && (hall_sensor_straight_track_state == 1)) {
-        hall_sensor_straight_track_state = 0;
-    }
-
-    if (!(hall_sensor_main_track_state_new == hall_sensor_main_track_state) && (hall_sensor_main_track_state == 1)) {
-        hall_sensor_main_track_state = 0;
-    }
-
-    hallsState[0] = hall_sensor_main_track_state ^ 1;
-    hallsState[1] = hall_sensor_straight_track_state ^ 1;
-    hallsState[2] = hall_sensor_diverging_track_state ^ 1;
-
-    mesured_tension_blade_switch = analogRead(tension_blade_switch_pin);
-
-    if (mesured_tension_blade_switch >= 700) {
-        current_blade_switch = RAIL_STRAIGHT;
-
-    } else {
-        current_blade_switch = RAIL_DIVERGING;
-    }
+    refreshTurnoutPosition();
+    refreshHallSensors();
 }
