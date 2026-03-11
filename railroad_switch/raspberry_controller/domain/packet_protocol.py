@@ -5,9 +5,9 @@ from infrastructure.signals.signals import SignalState
 
 class Function(Enum):
     SET_TRAFFIC_LIGHTS = 0b00
-    SET_BLADE_SWITCH = 0b01
+    SET_TURNOUT = 0b01
     GET_HALL_SENSORS = 0b10
-    GET_BLADE_SWITCH = 0b11
+    GET_TURNOUT = 0b11
 
 
 class Position(Enum):
@@ -36,7 +36,7 @@ class SignalColor(Enum):
 def encode_set_turnout_packet(turnout_position: TurnoutPosition) -> int:
     byte = 0
     byte = byte | (turnout_position.value << 3)
-    byte = byte | (Function.SET_BLADE_SWITCH.value << 1)
+    byte = byte | (Function.SET_TURNOUT.value << 1)
     return byte
 
 

@@ -9,12 +9,12 @@ class TurnoutState:
 
 
 def refresh_turnout_state(arduino: ArduinoI2cBridge, turnout: TurnoutState) -> None:
-    packet = request_packet_until_matching_function(arduino, Function.GET_BLADE_SWITCH)
+    packet = request_packet_until_matching_function(arduino, Function.GET_TURNOUT)
     packet_state_value = packet >> 3 & 0b1
     turnout.position = TurnoutPosition(packet_state_value)
 
 
 def read_turnout_state(arduino: ArduinoI2cBridge) -> TurnoutPosition:
-    packet = request_packet_until_matching_function(arduino, Function.GET_BLADE_SWITCH)
+    packet = request_packet_until_matching_function(arduino, Function.GET_TURNOUT)
     packet_state_value = packet >> 3 & 0b1
     return TurnoutPosition(packet_state_value)
