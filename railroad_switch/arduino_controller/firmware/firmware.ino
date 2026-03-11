@@ -1,68 +1,74 @@
-#include <Wire.h>
 #include <Servo.h>
+#include <Wire.h>
 
-
-enum Function {
+enum class Function : uint8_t {
     SET_LED = 0b00,
     SET_TURNOUT = 0b01,
     GET_HALL_SENSORS = 0b10,
     GET_TURNOUT = 0b11
 };
 
-enum Position {
+enum class Position : uint8_t {
     LEAD = 0b00,
     NORMAL = 0b01,
     REVERSE = 0b10,
     FROG = 0b11
 };
 
-enum SignalColor {
+enum class SignalColor : uint8_t {
     RED = 0b00,
     YELLOW = 0b10,
     GREEN = 0b11
 };
 
-enum TurnoutPosition {
+enum class TurnoutPosition : uint8_t {
     NORMAL = 0b1,
     REVERSE = 0b0
 };
 
-enum HallDetection {
+enum class HallDetection: uint8_t {
     TRAIN_NOT_DETECTED = 0b0,
     TRAIN_WAS_DETECTED = 0b1
 };
 
 
 // Lead Position
-const int green_led_lead_pin = 2;
-const int red_led_lead_pin = 3;
-const int hall_sensor_lead_pin = 4;
-HallDetection hall_sensor_lead_state = TRAIN_NOT_DETECTED;
+const int GREEN_LED_LEAD_PIN = 2;
+const int RED_LED_LEAD_PIN = 3;
+const int HALL_SENSOR_LEAD_PIN = 4;
+HallDetection hall_sensor_lead_state = HallDetection::TRAIN_NOT_DETECTED;
 
 // Normal Position
-const int green_led_normal_pin = 5;
-const int red_led_normal_pin = 6;
-const int hall_sensor_normal_pin = 7;
-HallDetection hall_sensor_normal_state = TRAIN_NOT_DETECTED;
+const int GREEN_LED_NORMAL_PIN = 5;
+const int RED_LED_NORMAL_PIN = 6;
+const int HALL_SENSOR_NORMAL_PIN = 7;
+HallDetection hall_sensor_normal_state = HallDetection::TRAIN_NOT_DETECTED;
 
 // Reverse Position
-const int green_led_reverse_pin_pin= 8;
-const int red_led_reverse_pin = 9;
-const int hall_sensor_reverse_pin = 10;
-HallDetection hall_sensor_reverse_state = TRAIN_NOT_DETECTED;
+const int GREEN_LED_REVERSE_PIN_pin= 8;
+const int RED_LED_REVERSE_PIN = 9;
+const int HALL_SENSOR_REVERSE_PIN = 10;
+HallDetection hall_sensor_reverse_state = HallDetection::TRAIN_NOT_DETECTED;
 
 
 // Frog Position
-const int tension_turnout_pin = A0;
-const int servo_turnout_pin = 11;
+const int TENSION_TURNOUT_PIN = A0;
+const int SERVO_TURNOUT_PIN = 11;
 Servo servo_turnout;
 int tension_turnout;
 TurnoutPosition turnout_position;
 
-int packet_to_send = 0; // packet which is modified each time the client received a "get" order and then send
+
+// Constants
+const int LOOP_DELAY_MS = 250;
+const uint8_t I2C_ADDRESS = 0x08;
 
 
-// TODO: reset to 0 hall_sensors_state when train arrived
+// Packet modified before each response when the master requests a value
+int packet_to_send = 0;
+
+
+// TODO: reset hall_sensors_state when train arrived
 uint8_t hall_sensors_state[3] = {
     0, // Lead Position
     0, // Normal Position
@@ -71,30 +77,33 @@ uint8_t hall_sensors_state[3] = {
 
 
 void setup() {
-    // I2C 
-    Wire.begin(0x08);
+    // I2C
+    Wire.begin(I2C_ADDRESS);
     Wire.onReceive(receiveEvent);
     Wire.onRequest(requestEvent);
 
     // Lead Position
-    pinMode(green_led_lead_pin, OUTPUT);
-    pinMode(red_led_lead_pin, OUTPUT);
-    pinMode(hall_sensor_lead_pin, INPUT);
+    pinMode(GREEN_LED_LEAD_PIN, OUTPUT);
+    pinMode(RED_LED_LEAD_PIN, OUTPUT);
+    pinMode(HALL_SENSOR_LEAD_PIN, INPUT);
 
     // Normal Position
-    pinMode(green_led_normal_pin, OUTPUT);
-    pinMode(red_led_normal_pin, OUTPUT);
-    pinMode(hall_sensor_normal_pin, INPUT);
+    pinMode(GREEN_LED_NORMAL_PIN, OUTPUT);
+    pinMode(RED_LED_NORMAL_PIN, OUTPUT);
+    pinMode(HALL_SENSOR_NORMAL_PIN, INPUT);
 
     // Reverse Position
-    pinMode(green_led_reverse_pin, OUTPUT);
-    pinMode(red_led_reverse_pin, OUTPUT);
-    pinMode(hall_sensor_reverse_pin, INPUT);
+    pinMode(GREEN_LED_REVERSE_PIN, OUTPUT);
+    pinMode(RED_LED_REVERSE_PIN, OUTPUT);
+    pinMode(HALL_SENSOR_REVERSE_PIN, INPUT);
 
     // Frog Position
-    servo_turnout.attach(servo_turnout_pin);
+    servo_turnout.attach(SERVO_TURNOUT_PIN);
     servo_turnout.write(15);  // initial neutral position
     refreshTurnoutPosition();
+    const int TURNOUT_ANALOG_THRESHOLD = 700;
+    const int TURNOUT_SERVO_NORMAL_ANGLE = 15;
+    const int TURNOUT_SERVO_REVERSE_ANGLE = 30;
 
 }
 
@@ -106,50 +115,50 @@ void receiveEvent(int howMany) {
 
     Function function = ((packet >> 1) & 0b11);
 
-    if (function == SET_LED) {
+    if (function == Function::SET_LED) {
         setLed(packet);
-    } else if (function == SET_TURNOUT) {
+    } else if (function == Function::SET_TURNOUT) {
         setTurnout(packet);
-    } else if (function == GET_TURNOUT) {
+    } else if (function == Function::GET_TURNOUT) {
         sendTurnout();
-    } else if (function == GET_HALL_SENSORS) {
+    } else if (function == Function::GET_HALL_SENSORS) {
         sendHallSensors();
     }
     }
 }
 
 void setLed(int packet) {
-    Position position = ((packet >> 5) & 0b111);
-    SignalColor color = ((packet >> 3) & 0b11);
+    Position position = static_cast<Position>((packet >> 5) & 0b111);
+    SignalColor color = static_cast<SignalColor>((packet >> 3) & 0b11);
 
-    if (position == LEAD){
+    if (position == Position::LEAD){
 
-        digitalWrite(green_led_lead_pin, color == GREEN);
-        digitalWrite(red_led_lead_pin, color == RED);
-
-
-    } else if (position == NORMAL) {
-
-        digitalWrite(green_led_normal_pin, color == GREEN);
-        digitalWrite(red_led_normal_pin, color == RED);
-
-    } else if (position == REVERSE) {
+        digitalWrite(GREEN_LED_LEAD_PIN, color == SignalColor::GREEN);
+        digitalWrite(RED_LED_LEAD_PIN, color == SignalColor::RED);
 
 
-        digitalWrite(green_led_reverse_pin, color == GREEN);
-        digitalWrite(red_led_reverse_pin, color == RED);
+    } else if (position == Position::NORMAL) {
+
+        digitalWrite(GREEN_LED_NORMAL_PIN, color == SignalColor::GREEN);
+        digitalWrite(RED_LED_NORMAL_PIN, color == SignalColor::RED);
+
+    } else if (position == Position::REVERSE) {
+
+
+        digitalWrite(GREEN_LED_REVERSE_PIN, color == SignalColor::GREEN);
+        digitalWrite(RED_LED_REVERSE_PIN, color == SignalColor::RED);
 
     }
 }
 
 void setTurnout(int packet) {
-    TurnoutPosition demand_turnout_position = ((packet >> 3) & 0b1);
+    TurnoutPosition demand_turnout_position = static_cast<TurnoutPosition>((packet >> 3) & 0b1);
 
-    if (!(demand_turnout_position == turnout_position)) {
-        if (demand_turnout_position == NORMAL) {
-            servo_turnout.write(15);
-        } else if (demand_turnout_position == REVERSE){
-                servo_turnout.write(30);
+    if (demand_turnout_position != turnout_position) {
+        if (demand_turnout_position == Position::NORMAL) {
+            servo_turnout.write(TURNOUT_SERVO_NORMAL_ANGLE);
+        } else if (demand_turnout_position == Position::REVERSE){
+                servo_turnout.write(TURNOUT_SERVO_REVERSE_ANGLE);
             }
 
     }
@@ -157,32 +166,32 @@ void setTurnout(int packet) {
 }
 
 void refreshTurnoutPosition() {
-    tension_turnout = analogRead(tension_turnout_pin);
+    tension_turnout = analogRead(TENSION_TURNOUT_PIN);
 
-    if (tension_turnout >= 700) {
-        turnout_position = NORMAL;
+    if (tension_turnout >= TURNOUT_ANALOG_THRESHOLD) {
+        turnout_position = Position::NORMAL;
 
     } else {
-        turnout_position = REVERSE;
+        turnout_position = Position::REVERSE;
     }
 
 }
 
 void refreshHallSensors() {
-    HallDetection hall_sensor_reverse_state_new = digitalRead(hall_sensor_reverse_pin) ^ 1;
-    HallDetection hall_sensor_normal_state_new = digitalRead(hall_sensor_normal_pin) ^ 1;
-    HallDetection hall_sensor_lead_state_new = digitalRead(hall_sensor_lead_pin) ^ 1;
+    HallDetection hall_sensor_reverse_state_new = static_cast<HallDetection>(digitalRead(HALL_SENSOR_REVERSE_PIN) ^ 1);
+    HallDetection hall_sensor_normal_state_new = static_cast<HallDetection>(digitalRead(HALL_SENSOR_NORMAL_PIN) ^ 1);
+    HallDetection hall_sensor_lead_state_new = static_cast<HallDetection>(digitalRead(HALL_SENSOR_LEAD_PIN) ^ 1);
 
 
-    if (hall_sensor_lead_state_new == TRAIN_WAS_DETECTED)  {
-            hall_sensor_lead_state = TRAIN_WAS_DETECTED;
+    if (hall_sensor_lead_state_new == HallDetection::TRAIN_WAS_DETECTED)  {
+            hall_sensor_lead_state = HallDetection::TRAIN_WAS_DETECTED;
         }
 
-    if (hall_sensor_normal_state_new == TRAIN_WAS_DETECTED)  {
-            hall_sensor_normal_state = TRAIN_WAS_DETECTED;
+    if (hall_sensor_normal_state_new == HallDetection::TRAIN_WAS_DETECTED)  {
+            hall_sensor_normal_state = HallDetection::TRAIN_WAS_DETECTED;
         }
-    if (hall_sensor_reverse_state_new == TRAIN_WAS_DETECTED)  {
-            hall_sensor_reverse_state = TRAIN_WAS_DETECTED;
+    if (hall_sensor_reverse_state_new == HallDetection::TRAIN_WAS_DETECTED)  {
+            hall_sensor_reverse_state = HallDetection::TRAIN_WAS_DETECTED;
         }
 
         hall_sensors_state[0] = hall_sensor_lead_state;
@@ -194,7 +203,7 @@ void refreshHallSensors() {
 
 void sendHallSensors() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (GET_HALL_SENSORS <<  1);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_HALL_SENSORS) <<  1);
     packet_to_send = packet_to_send | (hall_sensors_state[0] << 5);
     packet_to_send = packet_to_send | (hall_sensors_state[1] << 4);
     packet_to_send = packet_to_send | (hall_sensors_state[2] << 3);
@@ -202,7 +211,7 @@ void sendHallSensors() {
 
 void sendTurnout() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (GET_TURNOUT <<  1);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_TURNOUT) <<  1);
     packet_to_send = packet_to_send | (turnout_position << 3);
 }
 
@@ -214,7 +223,7 @@ void requestEvent() {
 
 
 void loop() {
-    delay(250); // to avoid spamming
+    delay(LOOP_DELAY_MS);  // Avoid spamming
     refreshTurnoutPosition();
     refreshHallSensors();
 }
