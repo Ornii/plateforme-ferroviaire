@@ -26,7 +26,7 @@ enum class TurnoutPosition : uint8_t {
     REVERSE = 0b0
 };
 
-enum class HallDetection: uint8_t {
+enum class HallDetection : uint8_t {
     TRAIN_NOT_DETECTED = 0b0,
     TRAIN_WAS_DETECTED = 0b1
 };
@@ -45,7 +45,7 @@ const int HALL_SENSOR_NORMAL_PIN = 7;
 HallDetection hall_sensor_normal_state = HallDetection::TRAIN_NOT_DETECTED;
 
 // Reverse Position
-const int GREEN_LED_REVERSE_PIN_pin= 8;
+const int GREEN_LED_REVERSE_PIN = 8;
 const int RED_LED_REVERSE_PIN = 9;
 const int HALL_SENSOR_REVERSE_PIN = 10;
 HallDetection hall_sensor_reverse_state = HallDetection::TRAIN_NOT_DETECTED;
@@ -54,9 +54,12 @@ HallDetection hall_sensor_reverse_state = HallDetection::TRAIN_NOT_DETECTED;
 // Frog Position
 const int TENSION_TURNOUT_PIN = A0;
 const int SERVO_TURNOUT_PIN = 11;
+const int TURNOUT_ANALOG_THRESHOLD = 700;
+const int TURNOUT_SERVO_NORMAL_ANGLE = 15;
+const int TURNOUT_SERVO_REVERSE_ANGLE = 30;
 Servo servo_turnout;
 int tension_turnout;
-TurnoutPosition turnout_position;
+TurnoutPosition turnout_position = TurnoutPosition::NORMAL; // Temporary value
 
 
 // Constants
@@ -65,14 +68,14 @@ const uint8_t I2C_ADDRESS = 0x08;
 
 
 // Packet modified before each response when the master requests a value
-int packet_to_send = 0;
+uint8_t packet_to_send = 0;
 
 
 // TODO: reset hall_sensors_state when train arrived
-uint8_t hall_sensors_state[3] = {
-    0, // Lead Position
-    0, // Normal Position
-    0  // Reverse Position
+HallDetection hall_sensors_state[3] = {
+    HallDetection::TRAIN_NOT_DETECTED, // Lead Position
+    HallDetection::TRAIN_NOT_DETECTED, // Normal Position
+    HallDetection::TRAIN_NOT_DETECTED  // Reverse Position
 };
 
 
@@ -99,21 +102,17 @@ void setup() {
 
     // Frog Position
     servo_turnout.attach(SERVO_TURNOUT_PIN);
-    servo_turnout.write(15);  // initial neutral position
     refreshTurnoutPosition();
-    const int TURNOUT_ANALOG_THRESHOLD = 700;
-    const int TURNOUT_SERVO_NORMAL_ANGLE = 15;
-    const int TURNOUT_SERVO_REVERSE_ANGLE = 30;
 
 }
 
 
 
 void receiveEvent(int howMany) {
-    while (Wire.available()) {
-    int packet = Wire.read();
+    if (Wire.available()) {
+        uint8_t packet = Wire.read();
 
-    Function function = ((packet >> 1) & 0b11);
+    Function function = static_cast<Function>((packet >> 1) & 0b11);
 
     if (function == Function::SET_LED) {
         setLed(packet);
@@ -127,8 +126,9 @@ void receiveEvent(int howMany) {
     }
 }
 
-void setLed(int packet) {
-    Position position = static_cast<Position>((packet >> 5) & 0b111);
+
+void setLed(uint8_t packet) {
+    Position position = static_cast<Position>((packet >> 5) & 0b11);
     SignalColor color = static_cast<SignalColor>((packet >> 3) & 0b11);
 
     if (position == Position::LEAD){
@@ -151,13 +151,13 @@ void setLed(int packet) {
     }
 }
 
-void setTurnout(int packet) {
+void setTurnout(uint8_t packet) {
     TurnoutPosition demand_turnout_position = static_cast<TurnoutPosition>((packet >> 3) & 0b1);
 
     if (demand_turnout_position != turnout_position) {
-        if (demand_turnout_position == Position::NORMAL) {
+        if (demand_turnout_position == TurnoutPosition::NORMAL) {
             servo_turnout.write(TURNOUT_SERVO_NORMAL_ANGLE);
-        } else if (demand_turnout_position == Position::REVERSE){
+        } else {
                 servo_turnout.write(TURNOUT_SERVO_REVERSE_ANGLE);
             }
 
@@ -169,10 +169,10 @@ void refreshTurnoutPosition() {
     tension_turnout = analogRead(TENSION_TURNOUT_PIN);
 
     if (tension_turnout >= TURNOUT_ANALOG_THRESHOLD) {
-        turnout_position = Position::NORMAL;
+        turnout_position = TurnoutPosition::NORMAL;
 
     } else {
-        turnout_position = Position::REVERSE;
+        turnout_position = TurnoutPosition::REVERSE;
     }
 
 }
@@ -204,15 +204,15 @@ void refreshHallSensors() {
 void sendHallSensors() {
     packet_to_send = 0;
     packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_HALL_SENSORS) <<  1);
-    packet_to_send = packet_to_send | (hall_sensors_state[0] << 5);
-    packet_to_send = packet_to_send | (hall_sensors_state[1] << 4);
-    packet_to_send = packet_to_send | (hall_sensors_state[2] << 3);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[0]) << 5);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[1]) << 4);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[2]) << 3);
 }
 
 void sendTurnout() {
     packet_to_send = 0;
     packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_TURNOUT) <<  1);
-    packet_to_send = packet_to_send | (turnout_position << 3);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(turnout_position) << 3);
 }
 
 
