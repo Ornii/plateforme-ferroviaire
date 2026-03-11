@@ -1,25 +1,25 @@
-from domain.packet_protocol import TrackPosition
+from domain.packet_protocol import Position
 from domain.train_state import TrainState
 
 
 def is_routing_right(train: TrainState) -> bool:
     return not (
         (
-            train.init_position == TrackPosition.DIVERGING_TRACK
+            train.init_position == Position.REVERSE
             and (
-                train.objective_position == TrackPosition.DIVERGING_TRACK
-                or train.objective_position == TrackPosition.STRAIGHT_TRACK
+                train.objective_position == Position.REVERSE
+                or train.objective_position == Position.NORMAL
             )
         )
         or (
-            train.init_position == TrackPosition.STRAIGHT_TRACK
+            train.init_position == Position.NORMAL
             and (
-                train.objective_position == TrackPosition.STRAIGHT_TRACK
-                or train.objective_position == TrackPosition.DIVERGING_TRACK
+                train.objective_position == Position.NORMAL
+                or train.objective_position == Position.REVERSE
             )
         )
         or (
-            train.init_position == TrackPosition.MAIN_TRACK
-            and train.objective_position == TrackPosition.MAIN_TRACK
+            train.init_position == Position.LEAD
+            and train.objective_position == Position.LEAD
         )
     )

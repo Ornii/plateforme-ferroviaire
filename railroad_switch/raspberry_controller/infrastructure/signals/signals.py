@@ -2,15 +2,15 @@ from time import sleep
 
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from domain.packet_protocol import (
+    Position,
     SignalColor,
-    TrackPosition,
     encode_set_signal_packet,
 )
 from domain.train_state import TrainState
 
 
 class SignalState:
-    def __init__(self, init_color: SignalColor, position: TrackPosition) -> None:
+    def __init__(self, init_color: SignalColor, position: Position) -> None:
         self.color = init_color
         self.position = position
 
@@ -19,16 +19,12 @@ def build_signals_map(
     init_color_main_track: SignalColor,
     init_color_straight_track: SignalColor,
     init_color_diverging_track: SignalColor,
-) -> dict[TrackPosition, SignalState]:
+) -> dict[Position, SignalState]:
     signals = {}
-    signals[TrackPosition.MAIN_TRACK] = SignalState(
-        init_color_main_track, TrackPosition.MAIN_TRACK
-    )
-    signals[TrackPosition.STRAIGHT_TRACK] = SignalState(
-        init_color_straight_track, TrackPosition.STRAIGHT_TRACK
-    )
-    signals[TrackPosition.DIVERGING_TRACK] = SignalState(
-        init_color_diverging_track, TrackPosition.DIVERGING_TRACK
+    signals[Position.LEAD] = SignalState(init_color_main_track, Position.LEAD)
+    signals[Position.NORMAL] = SignalState(init_color_straight_track, Position.NORMAL)
+    signals[Position.REVERSE] = SignalState(
+        init_color_diverging_track, Position.REVERSE
     )
     return signals
 
@@ -45,18 +41,18 @@ def set_signal_color(
 
 
 def set_all_signals_green(
-    arduino: ArduinoI2cBridge, signals: dict[TrackPosition, SignalState]
+    arduino: ArduinoI2cBridge, signals: dict[Position, SignalState]
 ) -> None:
     # SNCF requirement: all lights are green at the beginning/in the end
-    for position in TrackPosition:
+    for position in Position:
         set_signal_color(arduino, signals[position], SignalColor.GREEN)
 
 
 def set_conflicting_signals_red(
     arduino: ArduinoI2cBridge,
     train: TrainState,
-    signals: dict[TrackPosition, SignalState],
+    signals: dict[Position, SignalState],
 ):
-    for position in TrackPosition:
+    for position in Position:
         if position != train.position:
             set_signal_color(arduino, signals[position], SignalColor.RED)

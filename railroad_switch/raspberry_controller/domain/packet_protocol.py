@@ -3,17 +3,18 @@ from enum import Enum
 from infrastructure.signals.signals import SignalState
 
 
-class FunctionCode(Enum):
-    SET_TRAFFIC_LIGHTS = 0b0
-    SET_BLADE_SWITCH = 0b1
+class Function(Enum):
+    SET_TRAFFIC_LIGHTS = 0b00
+    SET_BLADE_SWITCH = 0b01
     GET_HALL_SENSORS = 0b10
     GET_BLADE_SWITCH = 0b11
 
 
-class TrackPosition(Enum):
-    MAIN_TRACK = 0b0
-    STRAIGHT_TRACK = 0b1
-    DIVERGING_TRACK = 0b10
+class Position(Enum):
+    LEAD = 0b00
+    NORMAL = 0b01
+    REVERSE = 0b10
+    FROG = 0b11
 
 
 class HallDetection(Enum):
@@ -22,24 +23,24 @@ class HallDetection(Enum):
 
 
 class TurnoutPosition(Enum):
-    STRAIGHT_TRACK = 0b1
-    DIVERGING_TRACK = 0b0
+    NORMAL = 0b1
+    REVERSE = 0b0
 
 
 class SignalColor(Enum):
     GREEN = 0b11
-    RED = 0b0
+    RED = 0b00
     YELLOW = 0b10
 
 
 def encode_set_turnout_packet(turnout_position: TurnoutPosition) -> int:
     byte = 0
     byte = byte | (turnout_position.value << 3)
-    byte = byte | (FunctionCode.SET_BLADE_SWITCH.value << 1)
+    byte = byte | (Function.SET_BLADE_SWITCH.value << 1)
     return byte
 
 
-def encode_get_request_packet(function: FunctionCode) -> int:
+def encode_get_request_packet(function: Function) -> int:
     byte = 0
     byte = byte | (function.value << 1)
     return byte
@@ -49,5 +50,5 @@ def encode_set_signal_packet(signal: SignalState, signal_color: SignalColor) -> 
     byte = 0
     byte = byte | (signal.position.value << 5)
     byte = byte | (signal_color.value << 3)
-    byte = byte | (FunctionCode.SET_TRAFFIC_LIGHTS.value << 1)
+    byte = byte | (Function.SET_TRAFFIC_LIGHTS.value << 1)
     return byte

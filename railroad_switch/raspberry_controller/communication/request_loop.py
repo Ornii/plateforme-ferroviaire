@@ -1,11 +1,11 @@
 from time import sleep
 
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
-from domain.packet_protocol import FunctionCode, encode_get_request_packet
+from domain.packet_protocol import Function, encode_get_request_packet
 
 
 def request_packet_until_matching_function(
-    arduino: ArduinoI2cBridge, function: FunctionCode
+    arduino: ArduinoI2cBridge, function: Function
 ) -> int:
     packet_to_send = encode_get_request_packet(function)
 

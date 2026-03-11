@@ -17,7 +17,8 @@ def handle_train_exit_detection(
         ):
             if sensor.position == train.objective_position:
                 train.position = train.objective_position
-                train.is_in_junction = False
                 set_all_signals_green(arduino, junction.signals)
             else:
-                raise ValueError("Train is not in its objective_position")
+                raise ValueError(
+                    "Train is not in its objective_position. Issue with turnout position."
+                )
