@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from domain.junction_controller import JunctionState
 from domain.packet_protocol import SignalColor

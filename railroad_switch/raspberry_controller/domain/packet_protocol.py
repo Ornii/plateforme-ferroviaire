@@ -1,8 +1,8 @@
-from __future__ import annotations
-
 from enum import Enum
+from typing import TYPE_CHECKING
 
-from infrastructure.signals.signals import SignalState
+if TYPE_CHECKING:
+    from infrastructure.signals.signals import SignalState
 
 
 class Function(Enum):

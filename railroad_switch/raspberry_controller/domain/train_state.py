@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from domain.packet_protocol import Position
 
 
