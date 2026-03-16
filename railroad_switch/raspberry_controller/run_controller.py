@@ -6,7 +6,10 @@ from domain.train_junction_entry import handle_train_entry_detection
 from domain.train_junction_exit import handle_train_exit_detection
 from domain.train_state import TrainState
 from domain.verify_routing import is_routing_right
-from infrastructure.hall_sensors.hall_sensors import refresh_hall_sensors_state
+from infrastructure.hall_sensors.hall_sensors import (
+    refresh_hall_sensors_state,
+    reset_hall_sensors_state_of_arduino,
+)
 
 arduino = ArduinoI2cBridge(addr=0x08)
 train = TrainState(
@@ -34,6 +37,8 @@ def main(
             handle_train_entry_detection(train, junction)
         else:
             handle_train_exit_detection(arduino, train, junction)
+    reset_hall_sensors_state_of_arduino(arduino)
+    print("Train arrived")
 
 
 if __name__ == "__main__":

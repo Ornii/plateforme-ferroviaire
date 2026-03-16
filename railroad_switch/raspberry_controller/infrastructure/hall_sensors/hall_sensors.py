@@ -1,3 +1,5 @@
+from time import sleep
+
 from communication.arduino_i2c_bridge import ArduinoI2cBridge
 from communication.request_loop import request_packet_until_matching_function
 from domain.packet_protocol import (
@@ -38,3 +40,9 @@ def refresh_hall_sensors_state(
     hall_sensors[Position.LEAD].state = HallDetection(packet_state_main_track)
     hall_sensors[Position.NORMAL].state = HallDetection(packet_state_straight_track)
     hall_sensors[Position.REVERSE].state = HallDetection(packet_state_diverging_track)
+
+
+def reset_hall_sensors_state_of_arduino(arduino: ArduinoI2cBridge):
+    packet = encode_get_request_packet(Function.RESET_HALL_SENSORS)
+    arduino.bus.write_byte(arduino.addr, packet)
+    sleep(0.5)  # to avoid spamming

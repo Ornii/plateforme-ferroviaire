@@ -6,10 +6,11 @@ if TYPE_CHECKING:
 
 
 class Function(Enum):
-    SET_TRAFFIC_LIGHTS = 0b00
-    SET_TURNOUT = 0b01
-    GET_HALL_SENSORS = 0b10
-    GET_TURNOUT = 0b11
+    SET_TRAFFIC_LIGHTS = 0b000
+    SET_TURNOUT = 0b001
+    GET_HALL_SENSORS = 0b010
+    GET_TURNOUT = 0b011
+    RESET_HALL_SENSORS = 0b100
 
 
 class Position(Enum):
@@ -38,13 +39,13 @@ class SignalColor(Enum):
 def encode_set_turnout_packet(turnout_position: TurnoutPosition) -> int:
     byte = 0
     byte = byte | (turnout_position.value << 3)
-    byte = byte | (Function.SET_TURNOUT.value << 1)
+    byte = byte | Function.SET_TURNOUT.value
     return byte
 
 
 def encode_get_request_packet(function: Function) -> int:
     byte = 0
-    byte = byte | (function.value << 1)
+    byte = byte | function.value
     return byte
 
 
@@ -52,5 +53,5 @@ def encode_set_signal_packet(signal: SignalState, signal_color: SignalColor) -> 
     byte = 0
     byte = byte | (signal.position.value << 5)
     byte = byte | (signal_color.value << 3)
-    byte = byte | (Function.SET_TRAFFIC_LIGHTS.value << 1)
+    byte = byte | Function.SET_TRAFFIC_LIGHTS.value
     return byte

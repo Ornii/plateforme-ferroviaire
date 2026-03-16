@@ -13,11 +13,11 @@ def request_packet_until_matching_function(
     sleep(0.5)  # to avoid spamming
 
     packet = arduino.bus.read_byte(arduino.addr)
-    packet_function_value = packet >> 1 & 0b11
+    packet_function_value = packet & 0b111
 
     while packet_function_value != function.value:
         arduino.bus.write_byte(arduino.addr, packet_to_send)
         sleep(0.5)  # to avoid spamming
         packet = arduino.bus.read_byte(arduino.addr)
-        packet_function_value = packet >> 1 & 0b11
+        packet_function_value = packet & 0b111
     return packet

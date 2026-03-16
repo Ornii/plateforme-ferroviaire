@@ -2,10 +2,11 @@
 #include <Wire.h>
 
 enum class Function : uint8_t {
-    SET_LED = 0b00,
-    SET_TURNOUT = 0b01,
-    GET_HALL_SENSORS = 0b10,
-    GET_TURNOUT = 0b11
+    SET_LED = 0b000,
+    SET_TURNOUT = 0b001,
+    GET_HALL_SENSORS = 0b010,
+    GET_TURNOUT = 0b011?
+    RESET_HALL_SENSORS = 0b100
 };
 
 enum class Position : uint8_t {
@@ -54,7 +55,7 @@ HallDetection hall_sensor_reverse_state = HallDetection::TRAIN_NOT_DETECTED;
 // Frog Position
 const int TENSION_TURNOUT_PIN = A0;
 const int SERVO_TURNOUT_PIN = 11;
-const int TURNOUT_ANALOG_THRESHOLD = 700;
+const int TENSION_TURNOUT_THRESHOLD = 700;
 const int TURNOUT_SERVO_NORMAL_ANGLE = 15;
 const int TURNOUT_SERVO_REVERSE_ANGLE = 30;
 Servo servo_turnout;
@@ -107,26 +108,6 @@ void setup() {
 }
 
 
-
-void receiveEvent(int howMany) {
-    if (Wire.available()) {
-        uint8_t packet = Wire.read();
-
-    Function function = static_cast<Function>((packet >> 1) & 0b11);
-
-    if (function == Function::SET_LED) {
-        setLed(packet);
-    } else if (function == Function::SET_TURNOUT) {
-        setTurnout(packet);
-    } else if (function == Function::GET_TURNOUT) {
-        sendTurnout();
-    } else if (function == Function::GET_HALL_SENSORS) {
-        sendHallSensors();
-    }
-    }
-}
-
-
 void setLed(uint8_t packet) {
     Position position = static_cast<Position>((packet >> 5) & 0b11);
     SignalColor color = static_cast<SignalColor>((packet >> 3) & 0b11);
@@ -165,10 +146,11 @@ void setTurnout(uint8_t packet) {
     turnout_position = demand_turnout_position;
 }
 
+
 void refreshTurnoutPosition() {
     tension_turnout = analogRead(TENSION_TURNOUT_PIN);
 
-    if (tension_turnout >= TURNOUT_ANALOG_THRESHOLD) {
+    if (tension_turnout >= TENSION_TURNOUT_THRESHOLD) {
         turnout_position = TurnoutPosition::NORMAL;
 
     } else {
@@ -200,7 +182,6 @@ void refreshHallSensors() {
 }
 
 
-
 void sendHallSensors() {
     packet_to_send = 0;
     packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_HALL_SENSORS) <<  1);
@@ -216,11 +197,38 @@ void sendTurnout() {
 }
 
 
+void resetHallSensors() {
+    hall_sensors_state[3] = {
+        HallDetection::TRAIN_NOT_DETECTED, // Lead Position
+        HallDetection::TRAIN_NOT_DETECTED, // Normal Position
+        HallDetection::TRAIN_NOT_DETECTED  // Reverse Position
+    };
+}
+
+
 void requestEvent() {
     Wire.write(packet_to_send);
 }
 
+void receiveEvent(int howMany) {
+    if (Wire.available()) {
+        uint8_t packet = Wire.read();
 
+    Function function = static_cast<Function>(packet & 0b111);
+
+    if (function == Function::SET_LED) {
+        setLed(packet);
+    } else if (function == Function::SET_TURNOUT) {
+        setTurnout(packet);
+    } else if (function == Function::GET_TURNOUT) {
+        sendTurnout();
+    } else if (function == Function::GET_HALL_SENSORS) {
+        sendHallSensors();
+    } else if (function == Function::RESET_HALL_SENSORS) {
+        resetHallSensors();
+    }
+    }
+}
 
 void loop() {
     delay(LOOP_DELAY_MS);  // Avoid spamming
