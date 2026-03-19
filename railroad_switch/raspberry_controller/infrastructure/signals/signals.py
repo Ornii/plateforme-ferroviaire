@@ -45,7 +45,8 @@ def set_all_signals_green(
 ) -> None:
     # SNCF requirement: all lights are green at the beginning/in the end
     for position in Position:
-        set_signal_color(arduino, signals[position], SignalColor.GREEN)
+        if position != Position.FROG:
+            set_signal_color(arduino, signals[position], SignalColor.GREEN)
 
 
 def set_conflicting_signals_red(
@@ -54,5 +55,5 @@ def set_conflicting_signals_red(
     signals: dict[Position, SignalState],
 ):
     for position in Position:
-        if position != train.position:
+        if position != train.position or position != Position.FROG:
             set_signal_color(arduino, signals[position], SignalColor.RED)
