@@ -1,0 +1,929 @@
+\documentclass[a4paper, 11pt, french]{article}
+\usepackage[left=1cm, right=1cm, top=1.5cm, bottom=1.5cm]{geometry}
+\usepackage[frenchb]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+
+
+\begin{document}
+	
+	\tableofcontents
+	\newpage
+	\begin{center}
+		{\LARGE }\textbf{Protocole}
+	\end{center}
+	
+	\section*{Format générique}
+	
+	\begin{center}
+			\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			\draw (9,0) node {
+				X $=\Biggl\{ \begin{matrix}
+								0 \textrm{ ou} \\
+								1 \phantom{\textrm{ ou}}
+							\end{matrix}$
+						};
+			
+		\end{tikzpicture}
+	\end{center}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\color{green}
+		\item Alloué. Dépend de la fonction
+		\item Alloué. Dépend de la fonction
+		\item Alloué. Dépend de la fonction
+		\item Alloué. Dépend de la fonction
+	\end{enumerate}
+	\setlist[enumerate,1]{start=7}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{SET\_TRAFFIC\_LIGHTS}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			\draw (9,0) node {
+				X $=\Biggl\{ \begin{matrix}
+					0 \textrm{ ou} \\
+					1 \phantom{\textrm{ ou}}
+				\end{matrix}$
+			};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Couleur}
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\color{green}
+		\item Couleur
+		\item Couleur
+	\end{enumerate}
+	
+	\subsubsection{Couleur \textsf{GREEN}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+						
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Couleur \textsf{RED}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Couleur \textsf{YELLOW}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Position}
+	
+	\setlist[enumerate,1]{start=5}
+	\begin{enumerate}
+		\color{blue}
+		\item Position
+		\item Position
+	\end{enumerate}
+	
+	\subsubsection{Position \textsf{LEAD}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 6};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 5};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Position \textsf{NORMAL}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 6};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 5};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Position \textsf{REVERSE}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 6};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,blue] {\tiny 5};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\setlist[enumerate,1]{start=7}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{SET\_TURNOUT}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			\draw (9,0) node {
+				X $=\Biggl\{ \begin{matrix}
+					0 \textrm{ ou} \\
+					1 \phantom{\textrm{ ou}}
+				\end{matrix}$
+			};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{\'{E}tat de l'aiguillage}
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\color{green}
+		\item \'{E}tat de l'aiguillage
+	\end{enumerate}
+	
+	\subsubsection{\'{E}tat \textsf{NORMAL}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{\'{E}tat \textsf{REVERSE}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\setlist[enumerate,1]{start=4}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{GET\_TURNOUT}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	
+	\newpage
+	
+	\section{Fonction \textsf{RECEIVED\_TURNOUT} ou \textsf{SEND\_TURNOUT}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			\draw (9,0) node {
+				X $=\Biggl\{ \begin{matrix}
+					0 \textrm{ ou} \\
+					1 \phantom{\textrm{ ou}}
+				\end{matrix}$
+			};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{\'{E}tat de l'aiguillage}
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\color{green}
+		\item \'{E}tat de l'aiguillage
+	\end{enumerate}
+	
+	\subsubsection{\'{E}tat \textsf{NORMAL}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{\'{E}tat \textsf{REVERSE}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	\setlist[enumerate,1]{start=4}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{GET\_HALL\_SENSORS}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{RECEIVED\_HALL\_SENSORS} ou \textsf{SEND\_HALL\_SENSORS}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {X};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			\draw (9,0) node {
+				X $=\Biggl\{ \begin{matrix}
+					0 \textrm{ ou} \\
+					1 \phantom{\textrm{ ou}}
+				\end{matrix}$
+			};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{\'{E}tat}
+	
+	\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\color{green}
+		\item \'{E}tat. Pour position REVERSE
+		\item \'{E}tat. Pour position NORMAL
+		\item \'{E}tat. Pour position LEAD
+	\end{enumerate}
+	
+	\subsubsection{\'{E}tat - pour position \textsf{LEAD}}
+	\underline{\textsf{TRAIN\_WAS\_DETECTED}} \textbf{- Position LEAD}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 5};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\underline{\textsf{TRAIN\_NOT\_DETECTED}} \textbf{- Position \textsf{LEAD}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green]{\tiny 5};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{\'{E}tat - pour position \textsf{NORMAL}}
+	\underline{\textsf{TRAIN\_WAS\_DETECTED}} \textbf{- Position \textsf{NORMAL}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 4};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\underline{\textsf{TRAIN\_NOT\_DETECTED}} \textbf{- Position \textsf{NORMAL}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green]{\tiny 4};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{\'{E}tat - pour position \textsf{REVERSE}}
+	\underline{\textsf{TRAIN\_WAS\_DETECTED}} \textbf{- Position \textsf{REVERSE}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green] {\tiny 3};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\underline{\textsf{TRAIN\_NOT\_DETECTED}} \textbf{- Position \textsf{REVERSE}}
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,green]{\tiny 3};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\setlist[enumerate,1]{start=6}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	\newpage
+	
+	\section{Fonction \textsf{RESET\_HALL\_SENSORS}}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (-2,-1) node {\underline{bit \no}};
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle] {\tiny 7};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle] {\tiny 6};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle] {\tiny 5};
+			
+			\draw (3,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (3,-1) node[minimum size=0.5cm,draw,circle] {\tiny 4};
+			
+			\draw (4,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (4,-1) node[minimum size=0.5cm,draw,circle] {\tiny 3};
+			
+			\draw (5,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (5,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (6,0)
+			node[minimum size=1cm,draw] {1	};
+			\draw (6,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (7,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (7,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Fonction}
+	\setlist[enumerate,1]{start=0}
+	\begin{enumerate}
+		\color{red}
+		\item Fonction
+		\item Fonction
+		\item Fonction
+	\end{enumerate}
+	
+	\begin{center}
+		\begin{tikzpicture}
+			
+			\draw (0,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (0,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 2};
+			
+			\draw (1,0)
+			node[minimum size=1cm,draw] {1};
+			\draw (1,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 1};
+			
+			\draw (2,0)
+			node[minimum size=1cm,draw] {0};
+			\draw (2,-1) node[minimum size=0.5cm,draw,circle,red] {\tiny 0};
+			
+			
+		\end{tikzpicture}
+	\end{center}
+	
+		\setlist[enumerate,1]{start=3}
+	\begin{enumerate}
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+		\item Non alloué. Vaut 0
+	\end{enumerate}
+	
+	
+
+	
+	
+\end{document}
