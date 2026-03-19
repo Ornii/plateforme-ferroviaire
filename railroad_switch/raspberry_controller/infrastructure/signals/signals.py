@@ -43,7 +43,6 @@ def set_signal_color(
 def set_all_signals_green(
     arduino: ArduinoI2cBridge, signals: dict[Position, SignalState]
 ) -> None:
-    # SNCF requirement: all lights are green at the beginning/in the end
     for position in Position:
         if position != Position.FROG:
             set_signal_color(arduino, signals[position], SignalColor.GREEN)
