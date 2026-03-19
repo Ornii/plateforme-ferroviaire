@@ -107,6 +107,7 @@ void setup() {
     servo_turnout.attach(SERVO_TURNOUT_PIN);
     refreshTurnoutPosition();
 
+
 }
 
 
@@ -186,7 +187,7 @@ void refreshHallSensors() {
 
 void sendHallSensors() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::SEND_HALL_SENSORS) <<  1);
+    packet_to_send = packet_to_send | static_cast<uint8_t>(Function::SEND_HALL_SENSORS);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[0]) << 5);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[1]) << 4);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[2]) << 3);
@@ -194,17 +195,15 @@ void sendHallSensors() {
 
 void sendTurnout() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::SEND_TURNOUT) <<  1);
+    packet_to_send = packet_to_send | static_cast<uint8_t>(Function::SEND_TURNOUT);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(turnout_position) << 3);
 }
 
 
 void resetHallSensors() {
-    hall_sensors_state[3] = {
-        HallDetection::TRAIN_NOT_DETECTED, // Lead Position
-        HallDetection::TRAIN_NOT_DETECTED, // Normal Position
-        HallDetection::TRAIN_NOT_DETECTED  // Reverse Position
-    };
+    hall_sensors_state[0] = HallDetection::TRAIN_NOT_DETECTED;
+    hall_sensors_state[1] = HallDetection::TRAIN_NOT_DETECTED;
+    hall_sensors_state[2] = HallDetection::TRAIN_NOT_DETECTED;
 }
 
 
