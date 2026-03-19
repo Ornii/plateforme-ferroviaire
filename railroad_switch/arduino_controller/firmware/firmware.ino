@@ -66,7 +66,7 @@ TurnoutPosition turnout_position = TurnoutPosition::NORMAL; // Temporary value
 
 
 // Constants
-const int LOOP_DELAY_MS = 250;
+const int LOOP_DELAY_MS = 50;
 const uint8_t I2C_ADDRESS = 0x08;
 
 

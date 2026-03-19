@@ -8,6 +8,8 @@ from domain.packet_protocol import (
 )
 from domain.train_state import TrainState
 
+LOOP_DELAY_S = 0.05
+
 
 class SignalState:
     def __init__(self, init_color: SignalColor, position: Position) -> None:
@@ -37,7 +39,7 @@ def set_signal_color(
     signal.color = signal_color
     packet = encode_set_signal_packet(signal, signal_color)
     arduino.bus.write_byte(arduino.addr, packet)
-    sleep(0.5)
+    sleep(LOOP_DELAY_S)
 
 
 def set_all_signals_green(

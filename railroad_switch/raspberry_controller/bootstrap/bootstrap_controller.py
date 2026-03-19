@@ -3,6 +3,7 @@ from domain.junction_controller import JunctionState
 from domain.packet_protocol import SignalColor
 from domain.train_state import TrainState
 from domain.turnout_routing import set_turnout_for_train_passage
+from infrastructure.hall_sensors.hall_sensors import reset_hall_sensors_state_of_arduino
 from infrastructure.signals.signals import (
     set_all_signals_green,
     set_conflicting_signals_red,
@@ -27,4 +28,5 @@ def bootstrap_controller(train: TrainState, arduino: ArduinoI2cBridge) -> Juncti
         arduino, junction.turnout
     )  # not necessary with init_postion_turnout
     set_turnout_for_train_passage(arduino, train, junction.turnout)
+    reset_hall_sensors_state_of_arduino(arduino)
     return junction

@@ -9,6 +9,8 @@ from domain.packet_protocol import (
 from domain.train_state import TrainState
 from infrastructure.turnout.turnout import TurnoutState
 
+LOOP_DELAY_S = 0.05
+
 
 def set_turnout_for_train_passage(
     arduino: ArduinoI2cBridge, train: TrainState, turnout: TurnoutState
@@ -20,7 +22,7 @@ def set_turnout_for_train_passage(
     ) and turnout.position != TurnoutPosition.NORMAL:
         packet = encode_set_turnout_packet(TurnoutPosition.NORMAL)
         arduino.bus.write_byte(arduino.addr, packet)
-        sleep(0.5)
+        sleep(LOOP_DELAY_S)
 
     elif (
         train.objective_position == Position.REVERSE
@@ -28,4 +30,4 @@ def set_turnout_for_train_passage(
     ):
         packet = encode_set_turnout_packet(TurnoutPosition.REVERSE)
         arduino.bus.write_byte(arduino.addr, packet)
-        sleep(0.5)
+        sleep(LOOP_DELAY_S)

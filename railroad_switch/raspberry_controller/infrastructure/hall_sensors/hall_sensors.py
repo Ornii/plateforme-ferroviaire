@@ -9,6 +9,8 @@ from domain.packet_protocol import (
     encode_get_request_packet,
 )
 
+LOOP_DELAY_S = 0.05
+
 
 class HallSensorState:
     def __init__(self, position: Position) -> None:
@@ -47,4 +49,4 @@ def refresh_hall_sensors_state(
 def reset_hall_sensors_state_of_arduino(arduino: ArduinoI2cBridge):
     packet = encode_get_request_packet(Function.RESET_HALL_SENSORS)
     arduino.bus.write_byte(arduino.addr, packet)
-    sleep(0.5)  # to avoid spamming
+    sleep(LOOP_DELAY_S)
