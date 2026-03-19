@@ -55,5 +55,5 @@ def set_conflicting_signals_red(
     signals: dict[Position, SignalState],
 ):
     for position in Position:
-        if position != train.position or position != Position.FROG:
+        if position != train.position and position != Position.FROG:
             set_signal_color(arduino, signals[position], SignalColor.RED)

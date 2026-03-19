@@ -74,7 +74,6 @@ const uint8_t I2C_ADDRESS = 0x08;
 uint8_t packet_to_send = 0;
 
 
-// TODO: reset hall_sensors_state when train arrived
 HallDetection hall_sensors_state[3] = {
     HallDetection::TRAIN_NOT_DETECTED, // Lead Position
     HallDetection::TRAIN_NOT_DETECTED, // Normal Position
@@ -201,6 +200,9 @@ void sendTurnout() {
 
 
 void resetHallSensors() {
+    hall_sensor_lead_state = HallDetection::TRAIN_NOT_DETECTED;
+    hall_sensor_normal_state = HallDetection::TRAIN_NOT_DETECTED;
+    hall_sensor_reverse_state = HallDetection::TRAIN_NOT_DETECTED;
     hall_sensors_state[0] = HallDetection::TRAIN_NOT_DETECTED;
     hall_sensors_state[1] = HallDetection::TRAIN_NOT_DETECTED;
     hall_sensors_state[2] = HallDetection::TRAIN_NOT_DETECTED;
