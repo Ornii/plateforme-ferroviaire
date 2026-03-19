@@ -2,11 +2,13 @@
 #include <Wire.h>
 
 enum class Function : uint8_t {
-    SET_LED = 0b000,
+    SET_TRAFFIC_LIGHTS = 0b000,
     SET_TURNOUT = 0b001,
-    GET_HALL_SENSORS = 0b010,
-    GET_TURNOUT = 0b011?
-    RESET_HALL_SENSORS = 0b100
+    GET_TURNOUT = 0b010,
+    SEND_TURNOUT = 0b011,
+    GET_HALL_SENSORS = 0b100,
+    SEND_HALL_SENSORS = 0b101,
+    RESET_HALL_SENSORS = 0b110
 };
 
 enum class Position : uint8_t {
@@ -184,7 +186,7 @@ void refreshHallSensors() {
 
 void sendHallSensors() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_HALL_SENSORS) <<  1);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::SEND_HALL_SENSORS) <<  1);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[0]) << 5);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[1]) << 4);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(hall_sensors_state[2]) << 3);
@@ -192,7 +194,7 @@ void sendHallSensors() {
 
 void sendTurnout() {
     packet_to_send = 0;
-    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::GET_TURNOUT) <<  1);
+    packet_to_send = packet_to_send | (static_cast<uint8_t>(Function::SEND_TURNOUT) <<  1);
     packet_to_send = packet_to_send | (static_cast<uint8_t>(turnout_position) << 3);
 }
 
@@ -216,7 +218,7 @@ void receiveEvent(int howMany) {
 
     Function function = static_cast<Function>(packet & 0b111);
 
-    if (function == Function::SET_LED) {
+    if (function == Function::SET_TRAFFIC_LIGHTS) {
         setLed(packet);
     } else if (function == Function::SET_TURNOUT) {
         setTurnout(packet);

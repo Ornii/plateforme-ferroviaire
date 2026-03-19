@@ -31,7 +31,9 @@ def encode_get_hall_sensors_packet() -> int:
 def refresh_hall_sensors_state(
     arduino: ArduinoI2cBridge, hall_sensors: dict[Position, HallSensorState]
 ) -> None:
-    packet = request_packet_until_matching_function(arduino, Function.GET_HALL_SENSORS)
+    packet = request_packet_until_matching_function(
+        arduino, Function.GET_HALL_SENSORS, Function.RECEIVED_HALL_SENSORS
+    )
 
     packet_state_main_track = packet >> 5 & 0b1
     packet_state_straight_track = packet >> 4 & 0b1

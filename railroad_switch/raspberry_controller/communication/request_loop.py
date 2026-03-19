@@ -5,9 +5,9 @@ from domain.packet_protocol import Function, encode_get_request_packet
 
 
 def request_packet_until_matching_function(
-    arduino: ArduinoI2cBridge, function: Function
+    arduino: ArduinoI2cBridge, get_function: Function, received_function
 ) -> int:
-    packet_to_send = encode_get_request_packet(function)
+    packet_to_send = encode_get_request_packet(get_function)
 
     arduino.bus.write_byte(arduino.addr, packet_to_send)
     sleep(0.5)  # to avoid spamming
@@ -15,7 +15,7 @@ def request_packet_until_matching_function(
     packet = arduino.bus.read_byte(arduino.addr)
     packet_function_value = packet & 0b111
 
-    while packet_function_value != function.value:
+    while packet_function_value != received_function.value:
         arduino.bus.write_byte(arduino.addr, packet_to_send)
         sleep(0.5)  # to avoid spamming
         packet = arduino.bus.read_byte(arduino.addr)
