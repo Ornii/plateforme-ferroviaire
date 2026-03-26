@@ -234,7 +234,7 @@ void receiveEvent(int howMany) {
 }
 
 void loop() {
-    delay(LOOP_DELAY_MS);  // Avoid spamming
+    delay(LOOP_DELAY_MS);
     refreshTurnoutPosition();
     refreshHallSensors();
 }
