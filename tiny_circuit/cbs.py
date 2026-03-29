@@ -193,6 +193,7 @@ class Scenario:
         new_paths = {}
         for agent, path in scenario.paths.items():
             new_paths[agent] = path.copy()
+        self.paths = new_paths
         self.cost = scenario.cost
         self.constraints = scenario.constraints.copy()
 
@@ -261,38 +262,81 @@ def djikstra(
     target_node: Node,
     constraints=None,
 ) -> tuple[list[Node], int]:
-    nodes_not_visited = graphe.get_nodes().copy()
-    predecessors = {}
-    for node in nodes_not_visited:
-        predecessors[node] = "Unknown"
-    predecessors[start_node] = start_node
-    distances = {}
-    for node in nodes_not_visited:
-        distances[node] = float("inf")
-    distances[start_node] = 0
-    node = minimum_distance_with_chosen_nodes(distances, nodes_not_visited)
-    nodes_not_visited.remove(node)
-    while node != target_node:
-        for successor_node in node.successors:
-            if (
-                distances[successor_node]
-                > distances[node] + node.successors[successor_node]
-            ):
-                predecessors[successor_node] = node
-                distances[successor_node] = (
-                    distances[node] + node.successors[successor_node]
-                )
-        node = minimum_distance_with_chosen_nodes(distances, nodes_not_visited)
+    if constraints is None:
+        constraints = []
+
+    max_constraint_time = -1
+    for constraint in constraints:
+        if constraint.time is not None and constraint.time > max_constraint_time:
+            max_constraint_time = constraint.time
+    max_time = max_constraint_time + len(graphe.get_nodes()) + 2
+
+    nodes_not_visited = [(start_node, 0)]
+    predecessors = {(start_node, 0): (start_node, 0)}
+    distances = {(start_node, 0): 0}
+    visited_nodes = []
+
+    node = (start_node, 0)
+    while len(nodes_not_visited) > 0:
+        mini_node = nodes_not_visited[0]
+        mini_distance = distances[mini_node]
+        for chosen_node in nodes_not_visited:
+            if distances[chosen_node] < mini_distance:
+                mini_node = chosen_node
+                mini_distance = distances[chosen_node]
+        node = mini_node
         nodes_not_visited.remove(node)
-    if distances[target_node] == float("inf"):
+        visited_nodes.append(node)
+
+        current_node, current_time = node
+        if current_node == target_node and current_time >= max_constraint_time:
+            break
+        if current_time >= max_time:
+            continue
+
+        candidate_successors = {}
+        for successor_node, successor_cost in current_node.successors.items():
+            candidate_successors[successor_node] = successor_cost
+        candidate_successors[current_node] = 1
+
+        for successor_node, successor_cost in candidate_successors.items():
+            next_time = current_time + 1
+            forbidden = False
+            for constraint in constraints:
+                if constraint.forbids(current_node, successor_node, next_time):
+                    forbidden = True
+                    break
+            if forbidden:
+                continue
+
+            successor_state = (successor_node, next_time)
+            new_distance = distances[node] + successor_cost
+            if (
+                successor_state not in distances
+                or distances[successor_state] > new_distance
+            ):
+                predecessors[successor_state] = node
+                distances[successor_state] = new_distance
+                if successor_state not in nodes_not_visited:
+                    nodes_not_visited.append(successor_state)
+
+    target_state = None
+    best_distance = float("inf")
+    for state in visited_nodes:
+        state_node, _ = state
+        if state_node == target_node and distances[state] < best_distance:
+            best_distance = distances[state]
+            target_state = state
+    if target_state is None:
         return [], -1
+
     result = []
-    node = target_node
-    result.append(node)
-    while node != start_node:
+    node = target_state
+    result.append(node[0])
+    while node != (start_node, 0):
         node = predecessors[node]
-        result.append(node)
-    return result[::-1], distances[target_node]
+        result.append(node[0])
+    return result[::-1], distances[target_state]
 
 
 def CBS(graphe: Graphe, list_agents: list[Agent]):
@@ -322,9 +366,13 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
             agent = constraint.get_agent()
             start_node = agent.get_start_node()
             target_node = agent.get_target_node()
+            constraints = []
+            for scenario_constraint in new_scenario.constraints:
+                if scenario_constraint.get_agent() == agent:
+                    constraints.append(scenario_constraint)
 
             new_path, _ = djikstra(
-                graphe, start_node, target_node, new_scenario.constraints
+                graphe, start_node, target_node, constraints
             )
 
             if len(new_path) > 0:
@@ -332,7 +380,10 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
                 new_cost = 0
                 for path in new_scenario.paths.values():
                     for i in range(len(path) - 1):
-                        new_cost += path[i].successors[path[i + 1]]
+                        if path[i + 1] in path[i].successors:
+                            new_cost += path[i].successors[path[i + 1]]
+                        else:
+                            new_cost += 1
                 new_scenario.change_cost(new_cost)
                 new_scenario.detect_collisions()
                 open_scenarios.append(new_scenario)
