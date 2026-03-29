@@ -28,6 +28,43 @@ class Collision:
         self.times = times
 
 
+class ConstraintType(Enum):
+    NODE_CONSTRAINT = auto()
+    EDGE_CONSTRAINT = auto()
+
+
+class Constraint:
+    def __init__(
+        self,
+        agent: Agent,
+        type: ConstraintType,
+        node: Node | None = None,
+        time: int | None = None,
+        edge: tuple[Node, Node] | None = None,
+    ) -> None:
+        self.agent = agent
+        self.type = type
+        self.node = node
+        self.time = time
+        self.edge = edge
+
+    def get_agent(self) -> Agent:
+        return self.agent
+
+    def forbids(self, current_node: Node, next_node: Node, next_time: int) -> bool:
+        if self.type == ConstraintType.NODE_CONSTRAINT:
+            return self.node == next_node and self.time == next_time
+        if self.type == ConstraintType.EDGE_CONSTRAINT:
+            if self.edge is None or self.time is None:
+                return False
+            return (
+                self.edge[0] == current_node
+                and self.edge[1] == next_node
+                and self.time == next_time - 1
+            )
+        return False
+
+
 class Node:
     def __init__(self, id: str) -> None:
         self.id = id
@@ -45,14 +82,16 @@ class Graphe:
         self.nodes = []
         self.dict_nodes = {}
         for node_id in adjacency_matrix:
-            self.nodes.append(Node(node_id))
+            node = Node(node_id)
+            self.nodes.append(node)
+            self.dict_nodes[node_id] = node
 
         for node_id, successors_dict_id in adjacency_matrix.items():
             successors_dict_nodes = {}
-            for successor_node_id in successors_dict_id:
-                successors_dict_nodes[self.dict_nodes[node_id]] = successors_dict_id[
-                    successor_node_id
-                ]
+            for successor_node_id, successor_cost in successors_dict_id.items():
+                successors_dict_nodes[self.dict_nodes[successor_node_id]] = (
+                    successor_cost
+                )
             self.dict_nodes[node_id].add_successors(successors_dict_nodes)
 
     def get_node_with_id(self, node_id: str):
@@ -99,6 +138,7 @@ class Scenario:
         return self.cost
 
     def detect_collisions(self):
+        self.collisions = []
         self.detect_nodes_collisions()
         self.detect_swap_collisions()
 
@@ -111,7 +151,10 @@ class Scenario:
         for i in range(len(all_paths)):
             for j in range(i + 1, len(all_paths)):
                 for t in range(len(all_paths[i])):
-                    if t <= len(all_paths[j]) and all_paths[i][t] == all_paths[j][t]:
+                    if (
+                        t <= len(all_paths[j]) - 1
+                        and all_paths[i][t] == all_paths[j][t]
+                    ):
                         collision = Collision(CollisionType.NODE_COLLISION)
                         collision.add_node_collision(
                             all_paths[i][t], (all_agents[i], all_agents[j]), t
@@ -146,9 +189,12 @@ class Scenario:
     def add_constraints(self, constraints):
         self.constraints.append(constraints)
 
-    def copy_paths_and_cost(self, scenario: Scenario):
-        self.paths = scenario.paths
+    def copy_paths_cost_constraints(self, scenario: Scenario):
+        new_paths = {}
+        for agent, path in scenario.paths.items():
+            new_paths[agent] = path.copy()
         self.cost = scenario.cost
+        self.constraints = scenario.constraints.copy()
 
     def change_path(self, agent: Agent, path: list[Node]):
         self.paths[agent] = path
@@ -179,11 +225,43 @@ def minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
     return mini_scenario
 
 
+def standard_splitting(collision: Collision) -> list[Constraint]:
+    if collision.type == CollisionType.NODE_COLLISION:
+        agent1, agent2 = collision.agents
+        node = collision.node
+        time = collision.time
+        return [
+            Constraint(agent1, ConstraintType.NODE_CONSTRAINT, node=node, time=time),
+            Constraint(agent2, ConstraintType.NODE_CONSTRAINT, node=node, time=time),
+        ]
+
+    if collision.type == CollisionType.SWAP_COLLISION:
+        agent1, agent2 = collision.agents
+        node1, node2 = collision.nodes
+        time = collision.times[0]
+        return [
+            Constraint(
+                agent1,
+                ConstraintType.EDGE_CONSTRAINT,
+                edge=(node1, node2),
+                time=time,
+            ),
+            Constraint(
+                agent2,
+                ConstraintType.EDGE_CONSTRAINT,
+                edge=(node2, node1),
+                time=time,
+            ),
+        ]
+
+    return []
+
+
 def djikstra(
     graphe: Graphe,
     start_node: Node,
     target_node: Node,
-    constraints=[],
+    constraints=None,
 ) -> tuple[list[Node], int]:
     nodes_not_visited = graphe.get_nodes().copy()
     predecessors = {}
@@ -241,19 +319,22 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
 
         for constraint in constraints_list:
             new_scenario = Scenario()
+            new_scenario.copy_paths_cost_constraints(scenario)
             new_scenario.add_constraints(constraint)
-            new_scenario.copy_paths_and_cost(scenario)
-
             agent = constraint.get_agent()
             start_node = agent.get_start_node()
             target_node = agent.get_target_node()
 
-            new_path, new_cost = djikstra(
+            new_path, _ = djikstra(
                 graphe, start_node, target_node, new_scenario.constraints
             )
 
-            if new_path is not None:
+            if len(new_path) > 0:
                 new_scenario.change_path(agent, new_path)
+                new_cost = 0
+                for path in new_scenario.paths.values():
+                    for i in range(len(path) - 1):
+                        new_cost += path[i].successors[path[i + 1]]
                 new_scenario.change_cost(new_cost)
                 new_scenario.detect_collisions()
                 open_scenarios.append(new_scenario)
