@@ -51,6 +51,20 @@ class Constraint:
     def get_agent(self) -> Agent:
         return self.agent
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Constraint):
+            return False
+        return (
+            self.agent == other.agent
+            and self.type == other.type
+            and self.node == other.node
+            and self.time == other.time
+            and self.edge == other.edge
+        )
+
+    def __hash__(self) -> int:
+        return hash((self.agent, self.type, self.node, self.time, self.edge))
+
     def forbids(self, current_node: Node, next_node: Node, next_time: int) -> bool:
         if self.type == ConstraintType.NODE_CONSTRAINT:
             return self.node == next_node and self.time == next_time
@@ -150,14 +164,14 @@ class Scenario:
             all_agents.append(agent)
         for i in range(len(all_paths)):
             for j in range(i + 1, len(all_paths)):
-                for t in range(len(all_paths[i])):
-                    if (
-                        t <= len(all_paths[j]) - 1
-                        and all_paths[i][t] == all_paths[j][t]
-                    ):
+                max_time = max(len(all_paths[i]), len(all_paths[j]))
+                for t in range(max_time):
+                    node_i = all_paths[i][t] if t < len(all_paths[i]) else all_paths[i][-1]
+                    node_j = all_paths[j][t] if t < len(all_paths[j]) else all_paths[j][-1]
+                    if node_i == node_j:
                         collision = Collision(CollisionType.NODE_COLLISION)
                         collision.add_node_collision(
-                            all_paths[i][t], (all_agents[i], all_agents[j]), t
+                            node_i, (all_agents[i], all_agents[j]), t
                         )
                         self.collisions.append(collision)
 
@@ -169,15 +183,24 @@ class Scenario:
             all_agents.append(agent)
         for i in range(len(all_paths)):
             for j in range(i + 1, len(all_paths)):
-                for t in range(len(all_paths[i]) - 1):
-                    if (
-                        t + 1 <= len(all_paths[j]) - 1
-                        and all_paths[i][t] == all_paths[j][t + 1]
-                        and all_paths[i][t + 1] == all_paths[j][t]
-                    ):
+                max_time = max(len(all_paths[i]), len(all_paths[j]))
+                for t in range(max_time - 1):
+                    a_t = all_paths[i][t] if t < len(all_paths[i]) else all_paths[i][-1]
+                    a_t1 = (
+                        all_paths[i][t + 1]
+                        if t + 1 < len(all_paths[i])
+                        else all_paths[i][-1]
+                    )
+                    b_t = all_paths[j][t] if t < len(all_paths[j]) else all_paths[j][-1]
+                    b_t1 = (
+                        all_paths[j][t + 1]
+                        if t + 1 < len(all_paths[j])
+                        else all_paths[j][-1]
+                    )
+                    if a_t == b_t1 and a_t1 == b_t:
                         collision = Collision(CollisionType.SWAP_COLLISION)
                         collision.add_swap_collision(
-                            (all_paths[i][t], all_paths[j][t]),
+                            (a_t, b_t),
                             (all_agents[i], all_agents[j]),
                             (t, t + 1),
                         )
@@ -186,8 +209,11 @@ class Scenario:
     def get_collisions(self):
         return self.collisions
 
-    def add_constraints(self, constraints):
+    def add_constraints(self, constraints) -> bool:
+        if constraints in self.constraints:
+            return False
         self.constraints.append(constraints)
+        return True
 
     def copy_paths_cost_constraints(self, scenario: Scenario):
         new_paths = {}
@@ -324,7 +350,11 @@ def djikstra(
     best_distance = float("inf")
     for state in visited_nodes:
         state_node, _ = state
-        if state_node == target_node and distances[state] < best_distance:
+        if (
+            state_node == target_node
+            and state[1] >= max_constraint_time
+            and distances[state] < best_distance
+        ):
             best_distance = distances[state]
             target_state = state
     if target_state is None:
@@ -362,7 +392,8 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
         for constraint in constraints_list:
             new_scenario = Scenario()
             new_scenario.copy_paths_cost_constraints(scenario)
-            new_scenario.add_constraints(constraint)
+            if not new_scenario.add_constraints(constraint):
+                continue
             agent = constraint.get_agent()
             start_node = agent.get_start_node()
             target_node = agent.get_target_node()
