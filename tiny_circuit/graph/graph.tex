@@ -1,9 +1,11 @@
 \documentclass[a4paper, 11pt, french]{article}
-\usepackage[left=1cm, right=1cm, top=1.5cm, bottom=1.5cm]{geometry}
+\usepackage[left=1cm, right=1cm, top=0.75cm, bottom=0.75cm]{geometry}
 \usepackage[frenchb]{babel}
 \usepackage[T1]{fontenc}
 \usepackage{tikz}
 \usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{blkarray}
 
 \definecolor{mylightblue}{HTML}{6699FF}
 \definecolor{myblue}{HTML}{3366CC}
@@ -35,14 +37,14 @@
 				orangenode/.style={circle,minimum size=1cm,fill=myorange!20,draw=myorange,line width=0.5mm},
 				rednode/.style={circle,minimum size=1cm,fill=myred!20,draw=myred,line width=0.5mm}}
 			\node[lightbluenode] (0) at (0,2) {C1};
-			\node[bluenode] (1) at (-2,1) {A1};
-			\node[orangenode] (2) at (2,1) {A2};
-			\node[darkbluenode] (3) at (0,0) {C2};
-			\node[lightgreennode] (4) at (-2,-1) {C3};
-			\node[yellownode] (5) at (2,-1) {C4};
-			\node[greennode] (6) at (-1,-2.5) {A3};
-			\node[greenishyellownode] (7) at (1,-2.5) {A4};
-			\node[rednode] (8) at (0,-4) {C5};
+			\node[bluenode] (1) at (-2,1) {C2(A1)};
+			\node[orangenode] (2) at (2,1) {C4(A2)};
+			\node[darkbluenode] (3) at (0,0) {C3};
+			\node[lightgreennode] (4) at (-2,-1) {C5};
+			\node[yellownode] (5) at (2,-1) {C6};
+			\node[greennode] (6) at (-1,-2.5) {C7(A3)};
+			\node[greenishyellownode] (7) at (1,-2.5) {C8(A4)};
+			\node[rednode] (8) at (0,-4) {C9};
 	
 			\draw[-stealth,very thick](0) to[bend right] (1);
 			\draw[-stealth,very thick](2) to[bend right] (0);
@@ -58,8 +60,31 @@
 		\end{tikzpicture}
 	}
 	\end{center}
+	\section*{Matrice d'adjacence}
+	$$
+	\begin{blockarray}{cccccccccc}
+		& \text{C1} & \text{C2} & \text{C3} & \text{C4} & \text{C5} & \text{C6} & \text{C7} & \text{C8} & \text{C9}\\
+		\begin{block}{c(ccccccccc)}
+			\text{C1} & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+			\text{C2} & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+			\text{C3} & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+			\text{C4} & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
+			\text{C5} & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+			\text{C6} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+			\text{C7} & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+			\text{C8} & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
+			\text{C9} & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+		\end{block}
+	\end{blockarray}
+	$$
+	\section*{Sur Python}
+		\begin{center}
+			\textsf{G = [(1, [2]), (2, [3, 5]), (3, [4]), (4, [1]), (5, [7]), (6, [4]), (7, [8, 9]), (8, [6]), (9, [8])]}
+		\end{center}
 	\section*{Schéma}
 	\begin{center}
 		\includegraphics[keepaspectratio,height=12cm]{schema_circuit.pdf}
 	\end{center}
+	
+	
 \end{document}

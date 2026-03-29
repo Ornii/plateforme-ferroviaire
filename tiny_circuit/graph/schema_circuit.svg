@@ -9,7 +9,7 @@
    id="svg1"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    sodipodi:docname="schema_circuit.svg"
-   inkscape:export-filename="Schéma circuit.png"
+   inkscape:export-filename="schema_circuit.pdf"
    inkscape:export-xdpi="250"
    inkscape:export-ydpi="250"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -27,13 +27,13 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      inkscape:zoom="1.4142136"
-     inkscape:cx="422.84984"
-     inkscape:cy="-6.0104075"
-     inkscape:window-width="1920"
-     inkscape:window-height="1046"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
-     inkscape:window-maximized="1"
+     inkscape:cx="77.781744"
+     inkscape:cy="111.36932"
+     inkscape:window-width="1242"
+     inkscape:window-height="1024"
+     inkscape:window-x="665"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1" />
@@ -366,14 +366,14 @@
     <text
        xml:space="preserve"
        style="font-size:8.46667px;line-height:1;font-family:Luciole;-inkscape-font-specification:'Luciole, Normal';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:none;stroke:#cc0000;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
-       x="122.18963"
-       y="166.76251"
+       x="123.57869"
+       y="165.59503"
        id="text1-8"><tspan
          sodipodi:role="line"
          id="tspan1-2"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';fill:#3366cc;stroke:none;stroke-width:0.75"
-         x="122.18963"
-         y="166.76251">A1</tspan></text>
+         x="123.57869"
+         y="165.59503">C2(A1)</tspan></text>
     <g
        id="layer1-1"
        transform="translate(46.473411,20.807004)">
@@ -387,41 +387,41 @@
            id="tspan1-1"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';fill:#003399;stroke:none;stroke-width:0.75"
            x="114.9006"
-           y="145.95551">C2</tspan></text>
+           y="145.95551">C3</tspan></text>
     </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#003399;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
-       x="196.91357"
-       y="166.76251"
+       x="196.5394"
+       y="165.59503"
        id="text2"><tspan
          sodipodi:role="line"
          id="tspan2"
          style="fill:#ff6600;stroke-width:0.75"
-         x="196.91357"
-         y="166.76251">A2</tspan></text>
+         x="196.5394"
+         y="165.59503">C4(A2)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ff6600;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
-       x="150.23482"
-       y="183.06252"
+       x="148.9252"
+       y="184.39503"
        id="text3"><tspan
          sodipodi:role="line"
          id="tspan3"
          style="fill:#00cc00;stroke-width:0.75"
-         x="150.23482"
-         y="183.06252">A3</tspan></text>
+         x="148.9252"
+         y="184.39503">C7(A3)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#00cc00;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
-       x="168.34711"
-       y="183.06252"
+       x="174.52103"
+       y="184.39503"
        id="text4"><tspan
          sodipodi:role="line"
          id="tspan4"
          style="fill:#669900;stroke-width:0.75"
-         x="168.34711"
-         y="183.06252">A4</tspan></text>
+         x="174.52103"
+         y="184.39503">C8(A4)</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.23333px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#669900;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
@@ -432,7 +432,7 @@
          id="tspan5"
          style="font-size:4.23333px;fill:#99cc33;stroke-width:0.75"
          x="134.79123"
-         y="175.74147">C3</tspan></text>
+         y="175.74147">C5</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:4.23333px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#99cc33;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
@@ -443,17 +443,17 @@
          id="tspan6"
          style="font-size:4.23333px;fill:#ffcc00;stroke-width:0.75"
          x="184.31841"
-         y="175.74147">C4</tspan></text>
+         y="175.74147">C6</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:8.46667px;line-height:1;font-family:'CMU Typewriter Text';-inkscape-font-specification:'CMU Typewriter Text Bold';text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#ffcc00;stroke:none;stroke-width:0.750001;stroke-linecap:round;stroke-miterlimit:8.2;stroke-dashoffset:7.37007"
        x="161.37401"
-       y="201.56252"
+       y="203.3625"
        id="text7"><tspan
          sodipodi:role="line"
          id="tspan7"
          style="fill:#cc0000;stroke-width:0.75"
          x="161.37401"
-         y="201.56252">C5</tspan></text>
+         y="203.3625">C9</tspan></text>
   </g>
 </svg>
