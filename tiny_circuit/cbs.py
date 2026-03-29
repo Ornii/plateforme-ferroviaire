@@ -252,6 +252,16 @@ def minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
     return mini_scenario
 
 
+def scenario_constraints_key(scenario: Scenario) -> frozenset[Constraint]:
+    return frozenset(scenario.constraints)
+
+
+def collision_time(collision: Collision) -> int:
+    if collision.type == CollisionType.NODE_COLLISION:
+        return collision.time
+    return collision.times[0]
+
+
 def standard_splitting(collision: Collision) -> list[Constraint]:
     if collision.type == CollisionType.NODE_COLLISION:
         agent1, agent2 = collision.agents
@@ -372,21 +382,27 @@ def djikstra(
 def CBS(graphe: Graphe, list_agents: list[Agent]):
 
     open_scenarios = []
+    open_constraints_keys = set()
+    closed_constraints_keys = set()
     scenario = Scenario()
     scenario.create_paths_and_cost(graphe, list_agents)
 
     scenario.detect_collisions()
 
     open_scenarios.append(scenario)
+    open_constraints_keys.add(scenario_constraints_key(scenario))
 
     while len(open_scenarios) > 0:
         scenario = minimum_cost_scenario(open_scenarios)
         open_scenarios.remove(scenario)
+        scenario_key = scenario_constraints_key(scenario)
+        open_constraints_keys.discard(scenario_key)
+        closed_constraints_keys.add(scenario_key)
 
         if len(scenario.get_collisions()) == 0:
             return scenario
 
-        collision = scenario.get_collisions()[0]
+        collision = min(scenario.get_collisions(), key=collision_time)
         constraints_list = standard_splitting(collision)
 
         for constraint in constraints_list:
@@ -417,7 +433,14 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
                             new_cost += 1
                 new_scenario.change_cost(new_cost)
                 new_scenario.detect_collisions()
+                new_scenario_key = scenario_constraints_key(new_scenario)
+                if (
+                    new_scenario_key in open_constraints_keys
+                    or new_scenario_key in closed_constraints_keys
+                ):
+                    continue
                 open_scenarios.append(new_scenario)
+                open_constraints_keys.add(new_scenario_key)
     return None
 
 
