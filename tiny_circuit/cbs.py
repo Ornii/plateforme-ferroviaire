@@ -235,7 +235,7 @@ def standard_splitting(collision: Collision) -> list[Constraint]:
             Constraint(agent2, ConstraintType.NODE_CONSTRAINT, node=node, time=time),
         ]
 
-    if collision.type == CollisionType.SWAP_COLLISION:
+    else:
         agent1, agent2 = collision.agents
         node1, node2 = collision.nodes
         time = collision.times[0]
@@ -253,8 +253,6 @@ def standard_splitting(collision: Collision) -> list[Constraint]:
                 time=time,
             ),
         ]
-
-    return []
 
 
 def djikstra(
