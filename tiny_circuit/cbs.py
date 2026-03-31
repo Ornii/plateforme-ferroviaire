@@ -3,29 +3,37 @@ from __future__ import annotations
 from enum import Enum, auto
 
 
+# TODO:
+# -waitingcost = 1 is hardcoded
+# -raise error if node is itself a predecessor
 class CollisionType(Enum):
-    SWAP_COLLISION = auto()
+    EDGE_COLLISION = auto()
     NODE_COLLISION = auto()
 
 
 class Collision:
     def __init__(self, type: CollisionType) -> None:
         self.type = type
+        self.nodes = []
+        self.agents = []
 
-    def add_node_collision(self, node: Node, agents: tuple[Agent, Agent], time: int):
-        self.node = node
-        self.agents = agents
+    def add_node_collision(self, node: Node, agents: list[Agent], time: int):
+        self.nodes.append(node)
+        for agent in agents:
+            self.agents.append(agent)
         self.time = time
 
-    def add_swap_collision(
+    def add_edge_collision(
         self,
-        nodes: tuple[Node, Node],
-        agents: tuple[Agent, Agent],
-        times: tuple[int, int],
+        nodes: list[Node],
+        agents: list[Agent],
+        time: int,
     ):
-        self.nodes = nodes
-        self.agents = agents
-        self.times = times
+        for node in nodes:
+            self.nodes.append(node)
+        for agent in agents:
+            self.agents.append(agent)
+        self.time = time
 
 
 class ConstraintType(Enum):
@@ -38,18 +46,28 @@ class Constraint:
         self,
         agent: Agent,
         type: ConstraintType,
-        node: Node | None = None,
-        time: int | None = None,
-        edge: tuple[Node, Node] | None = None,
+        node: Node | list[Node],
+        time: int,
     ) -> None:
         self.agent = agent
         self.type = type
         self.node = node
         self.time = time
-        self.edge = edge
 
     def get_agent(self) -> Agent:
         return self.agent
+
+    def forbids(self, current_node: Node, next_node: Node, next_time: int) -> bool:
+        if self.type == ConstraintType.NODE_CONSTRAINT:
+            return self.node == next_node and self.time == next_time
+        return (
+            self.node[0] == current_node
+            and self.node[1] == next_node
+            and self.time == next_time - 1
+        )
+
+    def get_time(self):
+        return self.time
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Constraint):
@@ -59,24 +77,10 @@ class Constraint:
             and self.type == other.type
             and self.node == other.node
             and self.time == other.time
-            and self.edge == other.edge
         )
 
     def __hash__(self) -> int:
-        return hash((self.agent, self.type, self.node, self.time, self.edge))
-
-    def forbids(self, current_node: Node, next_node: Node, next_time: int) -> bool:
-        if self.type == ConstraintType.NODE_CONSTRAINT:
-            return self.node == next_node and self.time == next_time
-        if self.type == ConstraintType.EDGE_CONSTRAINT:
-            if self.edge is None or self.time is None:
-                return False
-            return (
-                self.edge[0] == current_node
-                and self.edge[1] == next_node
-                and self.time == next_time - 1
-            )
-        return False
+        return hash((self.agent, self.type, self.node, self.time))
 
 
 class Node:
@@ -136,10 +140,10 @@ class Scenario:
     def __init__(self) -> None:
         self.constraints = []
         self.collisions = []
+        self.cost = 0
+        self.paths = {}
 
     def create_paths_and_cost(self, graphe: Graphe, list_agents: list[Agent]):
-        self.paths = {}
-        self.cost = 0
         for agent in list_agents:
             self.paths[agent], cost = djikstra(
                 graphe, agent.start_node, agent.target_node
@@ -153,10 +157,17 @@ class Scenario:
 
     def detect_collisions(self):
         self.collisions = []
-        self.detect_nodes_collisions()
-        self.detect_swap_collisions()
+        self.detect_node_collisions()
+        self.detect_edge_collisions()
 
-    def detect_nodes_collisions(self) -> None:
+    def detect_node_collisions(self) -> None:
+        """
+        Detect nodes collisions.
+        Node collision happens when two agents or more are on the same node.
+        It can happen when an agent is moving or idling.
+
+        This function adds collisions in self.collisions.
+        """
         all_paths = []
         all_agents = []
         for agent, path in self.paths.items():
@@ -166,16 +177,22 @@ class Scenario:
             for j in range(i + 1, len(all_paths)):
                 max_time = max(len(all_paths[i]), len(all_paths[j]))
                 for t in range(max_time):
-                    node_i = all_paths[i][t] if t < len(all_paths[i]) else all_paths[i][-1]
-                    node_j = all_paths[j][t] if t < len(all_paths[j]) else all_paths[j][-1]
+                    if t < len(all_paths[i]):
+                        node_i = all_paths[i][t]  # agent is moving
+                    else:
+                        node_i = all_paths[i][-1]  # agent is idling
+                    if t < len(all_paths[j]):
+                        node_j = all_paths[j][t]  # agent is moving
+                    else:
+                        node_j = all_paths[j][-1]  # agent is idling
                     if node_i == node_j:
                         collision = Collision(CollisionType.NODE_COLLISION)
                         collision.add_node_collision(
-                            node_i, (all_agents[i], all_agents[j]), t
+                            node_i, [all_agents[i], all_agents[j]], t
                         )
                         self.collisions.append(collision)
 
-    def detect_swap_collisions(self) -> None:
+    def detect_edge_collisions(self) -> None:
         all_paths = []
         all_agents = []
         for agent, path in self.paths.items():
@@ -183,31 +200,20 @@ class Scenario:
             all_agents.append(agent)
         for i in range(len(all_paths)):
             for j in range(i + 1, len(all_paths)):
-                max_time = max(len(all_paths[i]), len(all_paths[j]))
-                for t in range(max_time - 1):
-                    a_t = all_paths[i][t] if t < len(all_paths[i]) else all_paths[i][-1]
-                    a_t1 = (
-                        all_paths[i][t + 1]
-                        if t + 1 < len(all_paths[i])
-                        else all_paths[i][-1]
-                    )
-                    b_t = all_paths[j][t] if t < len(all_paths[j]) else all_paths[j][-1]
-                    b_t1 = (
-                        all_paths[j][t + 1]
-                        if t + 1 < len(all_paths[j])
-                        else all_paths[j][-1]
-                    )
-                    if a_t == b_t1 and a_t1 == b_t:
-                        collision = Collision(CollisionType.SWAP_COLLISION)
-                        collision.add_swap_collision(
-                            (a_t, b_t),
-                            (all_agents[i], all_agents[j]),
-                            (t, t + 1),
-                        )
-                        self.collisions.append(collision)
-
-    def get_collisions(self):
-        return self.collisions
+                for t in range(len(all_paths[i]) - 1):
+                    if t + 1 <= len(all_paths[j]) - 1:
+                        node_i_t = all_paths[i][t]
+                        node_i_tp1 = all_paths[i][t + 1]
+                        node_j_t = all_paths[j][t]
+                        node_j_tp1 = all_paths[j][t + 1]
+                        if node_i_t == node_j_tp1 and node_i_tp1 == node_j_t:
+                            collision = Collision(CollisionType.EDGE_COLLISION)
+                            collision.add_edge_collision(
+                                [node_i_t, node_j_t],
+                                [all_agents[i], all_agents[j]],
+                                t,
+                            )
+                            self.collisions.append(collision)
 
     def add_constraints(self, constraints) -> bool:
         if constraints in self.constraints:
@@ -229,17 +235,8 @@ class Scenario:
     def change_cost(self, cost: int):
         self.cost = cost
 
-
-def minimum_distance_with_chosen_nodes(
-    distances: dict[Node, int], chosen_nodes: list[Node]
-) -> Node:
-    mini_node = chosen_nodes[0]
-    mini_distance = distances[mini_node]
-    for node in chosen_nodes:
-        if distances[node] < mini_distance:
-            mini_node = node
-            mini_distance = distances[node]
-    return mini_node
+    def get_collisions(self):
+        return self.collisions
 
 
 def minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
@@ -252,42 +249,32 @@ def minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
     return mini_scenario
 
 
-def scenario_constraints_key(scenario: Scenario) -> frozenset[Constraint]:
-    return frozenset(scenario.constraints)
-
-
-def collision_time(collision: Collision) -> int:
-    if collision.type == CollisionType.NODE_COLLISION:
-        return collision.time
-    return collision.times[0]
-
-
 def standard_splitting(collision: Collision) -> list[Constraint]:
     if collision.type == CollisionType.NODE_COLLISION:
         agent1, agent2 = collision.agents
-        node = collision.node
+        node = collision.nodes[0]
         time = collision.time
         return [
-            Constraint(agent1, ConstraintType.NODE_CONSTRAINT, node=node, time=time),
-            Constraint(agent2, ConstraintType.NODE_CONSTRAINT, node=node, time=time),
+            Constraint(agent1, ConstraintType.NODE_CONSTRAINT, node, time),
+            Constraint(agent2, ConstraintType.NODE_CONSTRAINT, node, time),
         ]
 
     else:
         agent1, agent2 = collision.agents
         node1, node2 = collision.nodes
-        time = collision.times[0]
+        time = collision.time
         return [
             Constraint(
                 agent1,
                 ConstraintType.EDGE_CONSTRAINT,
-                edge=(node1, node2),
-                time=time,
+                [node1, node2],
+                time,
             ),
             Constraint(
                 agent2,
                 ConstraintType.EDGE_CONSTRAINT,
-                edge=(node2, node1),
-                time=time,
+                [node2, node1],
+                time,
             ),
         ]
 
@@ -303,123 +290,119 @@ def djikstra(
 
     max_constraint_time = -1
     for constraint in constraints:
-        if constraint.time is not None and constraint.time > max_constraint_time:
+        if constraint.time > max_constraint_time:
             max_constraint_time = constraint.time
     max_time = max_constraint_time + len(graphe.get_nodes()) + 2
 
-    nodes_not_visited = [(start_node, 0)]
+    """init"""
+    not_visited_nodes_time = [(start_node, 0)]
     predecessors = {(start_node, 0): (start_node, 0)}
     distances = {(start_node, 0): 0}
-    visited_nodes = []
 
-    node = (start_node, 0)
-    while len(nodes_not_visited) > 0:
-        mini_node = nodes_not_visited[0]
-        mini_distance = distances[mini_node]
-        for chosen_node in nodes_not_visited:
-            if distances[chosen_node] < mini_distance:
-                mini_node = chosen_node
-                mini_distance = distances[chosen_node]
-        node = mini_node
-        nodes_not_visited.remove(node)
-        visited_nodes.append(node)
+    visited_nodes_time = []
+    """loop"""
+    while len(not_visited_nodes_time) > 0:
+        """chosing the unvisited node with minimal distance """
+        mini_node_time = not_visited_nodes_time[0]
+        mini_distance = distances[mini_node_time]
+        for chosen_node_time in not_visited_nodes_time:
+            if distances[chosen_node_time] < mini_distance:
+                mini_node_time = chosen_node_time
+                mini_distance = distances[chosen_node_time]
+        not_visited_nodes_time.remove(mini_node_time)
+        visited_nodes_time.append(mini_node_time)
 
-        current_node, current_time = node
+        current_node, current_time = (
+            mini_node_time  # perhaps current node is forbidden with the constraints
+        )
+
         if current_node == target_node and current_time >= max_constraint_time:
             break
         if current_time >= max_time:
             continue
 
+        """creating all candidate candidates and include the current node itself"""
         candidate_successors = {}
+
         for successor_node, successor_cost in current_node.successors.items():
             candidate_successors[successor_node] = successor_cost
-        candidate_successors[current_node] = 1
-
+            candidate_successors[current_node] = 1  # waiting one timestep costs 1
+        next_time = current_time + 1
         for successor_node, successor_cost in candidate_successors.items():
-            next_time = current_time + 1
             forbidden = False
             for constraint in constraints:
                 if constraint.forbids(current_node, successor_node, next_time):
                     forbidden = True
                     break
             if forbidden:
-                continue
+                continue  # if the constraint forbids current node and a successor then chose another successor
 
-            successor_state = (successor_node, next_time)
-            new_distance = distances[node] + successor_cost
+            successor_node_time = (successor_node, next_time)
+            new_distance = distances[mini_node_time] + successor_cost
             if (
-                successor_state not in distances
-                or distances[successor_state] > new_distance
+                successor_node_time not in distances
+                or distances[successor_node_time] > new_distance
             ):
-                predecessors[successor_state] = node
-                distances[successor_state] = new_distance
-                if successor_state not in nodes_not_visited:
-                    nodes_not_visited.append(successor_state)
-
-    target_state = None
+                predecessors[successor_node_time] = mini_node_time
+                distances[successor_node_time] = new_distance
+                if successor_node_time not in not_visited_nodes_time:
+                    not_visited_nodes_time.append(successor_node_time)
+    target_node_time = None
     best_distance = float("inf")
-    for state in visited_nodes:
-        state_node, _ = state
+    for node_time in visited_nodes_time:
+        node, time = node_time
         if (
-            state_node == target_node
-            and state[1] >= max_constraint_time
-            and distances[state] < best_distance
+            node == target_node
+            and time >= max_constraint_time
+            and distances[node_time] < best_distance
         ):
-            best_distance = distances[state]
-            target_state = state
-    if target_state is None:
+            target_node_time = node_time
+            best_distance = distances[node_time]
+    if target_node_time is None:
         return [], -1
 
     result = []
-    node = target_state
-    result.append(node[0])
-    while node != (start_node, 0):
-        node = predecessors[node]
-        result.append(node[0])
-    return result[::-1], distances[target_state]
+    node_time = target_node_time
+    result.append(node_time[0])
+    while node_time != (start_node, 0):
+        node_time = predecessors[node_time]
+        result.append(node_time[0])
+    return result[::-1], distances[target_node_time]
 
 
 def CBS(graphe: Graphe, list_agents: list[Agent]):
 
     open_scenarios = []
-    open_constraints_keys = set()
-    closed_constraints_keys = set()
     scenario = Scenario()
     scenario.create_paths_and_cost(graphe, list_agents)
-
     scenario.detect_collisions()
-
     open_scenarios.append(scenario)
-    open_constraints_keys.add(scenario_constraints_key(scenario))
 
     while len(open_scenarios) > 0:
         scenario = minimum_cost_scenario(open_scenarios)
         open_scenarios.remove(scenario)
-        scenario_key = scenario_constraints_key(scenario)
-        open_constraints_keys.discard(scenario_key)
-        closed_constraints_keys.add(scenario_key)
 
         if len(scenario.get_collisions()) == 0:
             return scenario
 
-        collision = min(scenario.get_collisions(), key=collision_time)
+        collision = scenario.get_collisions()[0]
         constraints_list = standard_splitting(collision)
 
         for constraint in constraints_list:
             new_scenario = Scenario()
             new_scenario.copy_paths_cost_constraints(scenario)
             if not new_scenario.add_constraints(constraint):
-                continue
+                continue  # TODO: test if it is really necessary to continue
             agent = constraint.get_agent()
             start_node = agent.get_start_node()
             target_node = agent.get_target_node()
-            constraints = []
-            for scenario_constraint in new_scenario.constraints:
-                if scenario_constraint.get_agent() == agent:
-                    constraints.append(scenario_constraint)
+            constraints_of_agent = []
+            for new_scenario_constraint in new_scenario.constraints:
+                if new_scenario_constraint.get_agent() == agent:
+                    constraints_of_agent.append(new_scenario_constraint)
 
             new_path, _ = djikstra(
-                graphe, start_node, target_node, constraints
+                graphe, start_node, target_node, constraints_of_agent
             )
 
             if len(new_path) > 0:
@@ -430,27 +413,32 @@ def CBS(graphe: Graphe, list_agents: list[Agent]):
                         if path[i + 1] in path[i].successors:
                             new_cost += path[i].successors[path[i + 1]]
                         else:
-                            new_cost += 1
+                            new_cost += 1  # in this case, agent stays on its node
                 new_scenario.change_cost(new_cost)
                 new_scenario.detect_collisions()
-                new_scenario_key = scenario_constraints_key(new_scenario)
-                if (
-                    new_scenario_key in open_constraints_keys
-                    or new_scenario_key in closed_constraints_keys
-                ):
-                    continue
                 open_scenarios.append(new_scenario)
-                open_constraints_keys.add(new_scenario_key)
     return None
 
 
 if __name__ == "__main__":
     G = {
-        "1": {"2": 10, "3": 7, "4": 5},
-        "2": {"5": 1},
-        "3": {"2": 2, "5": 4, "7": 9},
-        "4": {"3": 1, "6": 9},
-        "5": {"6": 3, "7": 6},
-        "6": {"7": 4},
-        "7": {},
+        "C1": {"C2": 1},
+        "C2": {"C3": 1, "C5": 1},
+        "C3": {"C4": 1},
+        "C4": {"C1": 1},
+        "C5": {"C7": 1},
+        "C6": {"C4": 1},
+        "C7": {"C8": 1},
+        "C8": {"C6": 1, "C9": 1},
+        "C9": {"C7": 1},
     }
+    graphe = Graphe(G)
+    agent1 = Agent("ter", graphe.get_node_with_id("C7"), graphe.get_node_with_id("C8"))
+    agent2 = Agent("tgv", graphe.get_node_with_id("C5"), graphe.get_node_with_id("C6"))
+    scenario = CBS(graphe, [agent1, agent2])
+    dic = {}
+    for agent, path in scenario.paths.items():
+        dic[agent.id] = [node.id for node in path]
+
+    print(dic)
+    print(scenario.cost)
