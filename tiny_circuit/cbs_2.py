@@ -33,7 +33,6 @@ class Collision:
         self.time = time
 
 
-
 class ConstraintType(Enum):
     NODE_CONSTRAINT = auto()
     EDGE_CONSTRAINT = auto()
@@ -63,9 +62,9 @@ class Constraint:
             and self.node[1] == next_node
             and self.time == next_time - 1
         )
+
     def get_time(self):
         return self.time
-
 
 
 class Node:
@@ -200,7 +199,6 @@ class Scenario:
                             )
                             self.collisions.append(collision)
 
-
     def add_constraints(self, constraints) -> bool:
         if constraints in self.constraints:
             return False
@@ -247,9 +245,6 @@ def minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
     return mini_scenario
 
 
-
-
-
 def standard_splitting(collision: Collision) -> list[Constraint]:
     if collision.type == CollisionType.NODE_COLLISION:
         agent1, agent2 = collision.agents
@@ -288,15 +283,6 @@ def djikstra(
 ) -> tuple[list[Node], int]:
     if constraints is None:
         constraints = []
-
-    """calculating max_time of """
-    max_constraint_time = 0
-    for constraint in constraints:
-        if constraint.time > max_constraint_time:
-            max_constraint_time = constraint.time
-    max_time = (
-        max_constraint_time + len(graphe.get_nodes()) + 2
-    )  # TODO: check why the value 2 is chosen
 
     """init"""
     time = 0
@@ -350,7 +336,7 @@ def djikstra(
     target_node_time = None
     for node_time in visited_nodes_time:
         node, time = node_time
-        if node == target_node
+        if node == target_node:
             target_node_time = node_time
     if target_node_time is None:
         return [], -1
