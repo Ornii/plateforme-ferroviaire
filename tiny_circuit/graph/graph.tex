@@ -6,6 +6,7 @@
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{blkarray}
+\usepackage{listings}
 
 \definecolor{mylightblue}{HTML}{6699FF}
 \definecolor{myblue}{HTML}{3366CC}
@@ -55,8 +56,8 @@
 			\draw[-stealth,very thick](4) to[bend right] (6);
 			\draw[-stealth,very thick](7) to[bend right] (5);
 			\draw[-stealth,very thick](6) to (7);
-			\draw[-stealth,very thick](6) to[bend right] (8);
-			\draw[-stealth,very thick](8) to[bend right] (7);
+			\draw[-stealth,very thick](8) to[bend left] (6);
+			\draw[-stealth,very thick](7) to[bend left] (8);
 		\end{tikzpicture}
 	}
 	\end{center}
@@ -71,15 +72,27 @@
 			\text{C4} & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 \\
 			\text{C5} & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 			\text{C6} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
-			\text{C7} & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-			\text{C8} & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 \\
-			\text{C9} & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+			\text{C7} & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 \\
+			\text{C8} & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+			\text{C9} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
 		\end{block}
 	\end{blockarray}
 	$$
-	\section*{Sur Python}
+	\section*{Sur Python}		
 		\begin{center}
-			\textsf{G = [(1, [2]), (2, [3, 5]), (3, [4]), (4, [1]), (5, [7]), (6, [4]), (7, [8, 9]), (8, [6]), (9, [8])]}
+			\begin{lstlisting}[language=Python]
+G = {
+	"C1": {"C2": 1},
+	"C2": {"C3": 1, "C5": 1},
+	"C3": {"C4": 1},
+	"C4": {"C1": 1},
+	"C5": {"C7": 1},
+	"C6": {"C4": 1},
+	"C7": {"C8": 1},
+	"C8": {"C6": 1, "C9": 1},
+	"C9": {"C7": 1},
+}
+			\end{lstlisting}
 		\end{center}
 	\section*{Schéma}
 	\begin{center}
