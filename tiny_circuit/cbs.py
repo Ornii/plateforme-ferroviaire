@@ -46,12 +46,12 @@ class Constraint:
         self,
         agent: Agent,
         type: ConstraintType,
-        node: Node | list[Node],
+        nodes: list[Node],
         time: int,
     ) -> None:
         self.agent = agent
         self.type = type
-        self.node = node
+        self.nodes = nodes
         self.time = time
 
     def get_agent(self) -> Agent:
@@ -59,10 +59,10 @@ class Constraint:
 
     def forbids(self, current_node: Node, next_node: Node, next_time: int) -> bool:
         if self.type == ConstraintType.NODE_CONSTRAINT:
-            return self.node == next_node and self.time == next_time
+            return self.nodes == next_node and self.time == next_time
         return (
-            self.node[0] == current_node
-            and self.node[1] == next_node
+            self.nodes[0] == current_node
+            and self.nodes[1] == next_node
             and self.time == next_time - 1
         )
 
@@ -75,12 +75,12 @@ class Constraint:
         return (
             self.agent == other.agent
             and self.type == other.type
-            and self.node == other.node
+            and self.nodes == other.nodes
             and self.time == other.time
         )
 
     def __hash__(self) -> int:
-        return hash((self.agent, self.type, self.node, self.time))
+        return hash((self.agent, self.type, self.nodes, self.time))
 
 
 class Node:
@@ -283,10 +283,8 @@ def djikstra(
     graphe: Graphe,
     start_node: Node,
     target_node: Node,
-    constraints=None,
+    constraints=[],
 ) -> tuple[list[Node], int]:
-    if constraints is None:
-        constraints = []
 
     max_constraint_time = -1
     for constraint in constraints:
