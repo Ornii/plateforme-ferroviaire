@@ -101,6 +101,9 @@ class Node:
     def get_id(self) -> str:
         return self.id
 
+    def get_weight_by_successor_node(self):
+        return self.weight_by_successor_node
+
 
 class Graphe:
     def __init__(self, adjacency_matrix: dict[str, dict[str, int]]) -> None:
@@ -304,6 +307,30 @@ def standard_splitting(collision: Collision) -> list[Constraint]:
     ]
 
 
+def minimum_with_chosen_states(
+    distances: dict[tuple[Node, int], int], chosen_states: list[tuple[Node, int]]
+) -> tuple[Node, int]:
+    mini_state = chosen_states[0]
+    mini_distance = distances[mini_state]
+    for chosen_state in chosen_states:
+        if distances[chosen_state] < mini_distance:
+            mini_state = chosen_state
+            mini_distance = distances[chosen_state]
+    return mini_state
+
+
+def is_successor_node_possible_with_constraints(
+    current_node: Node,
+    successor_node: Node,
+    constraints: list[Constraint],
+    next_time: int,
+):
+    for constraint in constraints:
+        if constraint.forbids(current_node, successor_node, next_time):
+            return False
+    return True
+
+
 def djikstra(
     graphe: Graphe,
     start_node: Node,
@@ -320,49 +347,29 @@ def djikstra(
     not_visited_states = [(start_node, 0)]
     predecessors = {(start_node, 0): (start_node, 0)}
     distances = {(start_node, 0): 0}
-
     visited_states = []
     """loop"""
     while len(not_visited_states) > 0:
         """chosing the unvisited node with minimal distance """
-        mini_state = not_visited_states[0]
-        mini_distance = distances[mini_state]
-        for chosen_state in not_visited_states:
-            if distances[chosen_state] < mini_distance:
-                mini_state = chosen_state
-                mini_distance = distances[chosen_state]
-
+        mini_state = minimum_with_chosen_states(distances, not_visited_states)
         not_visited_states.remove(mini_state)
         visited_states.append(mini_state)
-
-        current_node, current_time = (
-            mini_state  # perhaps current node is forbidden with the constraints
-        )
+        current_node, current_time = mini_state
 
         if current_node == target_node and current_time >= max_constraint_time:
             break
         if current_time >= max_time:
             continue
 
-        """creating all candidate candidates and include the current node itself"""
-        candidate_successors = {}
-
-        for (
-            successor_node,
-            successor_weight,
-        ) in current_node.weight_by_successor_node.items():
-            candidate_successors[successor_node] = successor_weight
-            candidate_successors[current_node] = (
-                WAITING_COST  # waiting one timestep costs 1
-            )
+        """creating all candidates and include the current node itself"""
+        candidate_successors = current_node.get_weight_by_successor_node().copy()
+        candidate_successors[current_node] = WAITING_COST
         next_time = current_time + 1
+
         for successor_node, successor_weight in candidate_successors.items():
-            forbidden = False
-            for constraint in constraints:
-                if constraint.forbids(current_node, successor_node, next_time):
-                    forbidden = True
-                    break
-            if forbidden:
+            if not is_successor_node_possible_with_constraints(
+                current_node, successor_node, constraints, next_time
+            ):
                 continue  # if the constraint forbids current node and a successor then chose another successor
 
             successor_state = (successor_node, next_time)
@@ -436,27 +443,3 @@ def CBS(graphe: Graphe, agents: list[Agent]) -> Scenario:
                 new_scenario.detect_collisions()
                 open_scenarios.append(new_scenario)
     raise Exception("Routing is impossible")
-
-
-if __name__ == "__main__":
-    G = {
-        "C1": {"C2": 1},
-        "C2": {"C3": 1, "C5": 1},
-        "C3": {"C4": 1},
-        "C4": {"C1": 1},
-        "C5": {"C7": 1},
-        "C6": {"C4": 1},
-        "C7": {"C8": 1},
-        "C8": {"C6": 1, "C9": 1},
-        "C9": {"C7": 1},
-    }
-    graphe = Graphe(G)
-    agent_1 = Agent("ter", graphe.get_node_with_id("C7"), graphe.get_node_with_id("C8"))
-    agent_2 = Agent("tgv", graphe.get_node_with_id("C5"), graphe.get_node_with_id("C6"))
-    scenario = CBS(graphe, [agent_1, agent_2])
-    dic = {}
-    for agent, path in scenario.path_by_agent.items():
-        dic[agent.id] = [node.id for node in path]
-
-    print(dic)
-    print(scenario.cost)
