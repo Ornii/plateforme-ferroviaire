@@ -195,7 +195,7 @@ class Node:
         """
         return self.node_id
 
-    def get_weight_by_successor_node(self):
+    def get_weight_by_successor_node(self) -> dict[Node, int]:
         """Returns the weighted successor mapping for this node.
 
         Returns:
@@ -302,7 +302,7 @@ class Scenario:
         self.cost = 0
         self.paths_by_agent = {}
 
-    def route(self, graph: Graph, agents: list[Agent]):
+    def route(self, graph: Graph, agents: list[Agent]) -> None:
         """Computes initial unconstrained shortest paths for all agents.
 
         Args:
@@ -345,12 +345,8 @@ class Scenario:
         """
         return self.cost
 
-    def detect_collisions(self):
-        """Refreshes the complete list of collisions.
-
-        Returns:
-            None.
-        """
+    def detect_collisions(self) -> None:
+        """Refreshes the complete list of collisions."""
         self.collisions = []
         self.detect_node_collisions()
         self.detect_edge_collisions()
@@ -403,7 +399,9 @@ class Scenario:
                     if time + 1 <= len(agent_paths[second_agent_index]) - 1:
                         first_agent_current_node = agent_paths[first_agent_index][time]
                         first_agent_next_node = agent_paths[first_agent_index][time + 1]
-                        second_agent_current_node = agent_paths[second_agent_index][time]
+                        second_agent_current_node = agent_paths[second_agent_index][
+                            time
+                        ]
                         second_agent_next_node = agent_paths[second_agent_index][
                             time + 1
                         ]
@@ -729,9 +727,7 @@ def run_cbs(graph: Graph, agents: list[Agent]) -> Scenario:
 
             constraints_of_agent = new_scenario.get_constraints_for_agent(agent)
 
-            new_path, _ = dijkstra(
-                graph, start_node, target_node, constraints_of_agent
-            )
+            new_path, _ = dijkstra(graph, start_node, target_node, constraints_of_agent)
 
             if len(new_path) > 0:
                 new_scenario.change_path(agent, new_path)
@@ -739,4 +735,3 @@ def run_cbs(graph: Graph, agents: list[Agent]) -> Scenario:
                 new_scenario.detect_collisions()
                 open_scenarios.append(new_scenario)
     raise Exception("Routing is impossible")
-
