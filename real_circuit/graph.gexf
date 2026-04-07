@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2026-04-07">
+    <creator>NetworkX 3.6.1</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <nodes>
+      <node id="C1,t" label="C1,t" />
+      <node id="C1,h" label="C1,h" />
+      <node id="C2,t" label="C2,t" />
+      <node id="C2,h" label="C2,h" />
+      <node id="C3,t" label="C3,t" />
+      <node id="C3,h" label="C3,h" />
+      <node id="C4,t" label="C4,t" />
+      <node id="C4,h" label="C4,h" />
+      <node id="C5,t" label="C5,t" />
+      <node id="C5,h" label="C5,h" />
+      <node id="C6,t" label="C6,t" />
+      <node id="C6,h" label="C6,h" />
+      <node id="C7,t" label="C7,t" />
+      <node id="C7,h" label="C7,h" />
+      <node id="C8,h" label="C8,h" />
+      <node id="C9,t" label="C9,t" />
+      <node id="C10,t" label="C10,t" />
+      <node id="C10,h" label="C10,h" />
+      <node id="C11,h" label="C11,h" />
+      <node id="C12,t" label="C12,t" />
+      <node id="C13,h" label="C13,h" />
+      <node id="C14,h" label="C14,h" />
+      <node id="C15,t" label="C15,t" />
+      <node id="C16,t" label="C16,t" />
+      <node id="C16,h" label="C16,h" />
+      <node id="C17,t" label="C17,t" />
+      <node id="C17,h" label="C17,h" />
+      <node id="C18,t" label="C18,t" />
+      <node id="C18,h" label="C18,h" />
+      <node id="C19,h" label="C19,h" />
+      <node id="C19,t" label="C19,t" />
+      <node id="T1,h" label="T1,h" />
+      <node id="T2,h" label="T2,h" />
+      <node id="T3,h" label="T3,h" />
+      <node id="T4,h" label="T4,h" />
+      <node id="T1,t" label="T1,t" />
+      <node id="T4,t" label="T4,t" />
+      <node id="T2,t" label="T2,t" />
+      <node id="T3,t" label="T3,t" />
+      <node id="C15,h" label="C15,h" />
+    </nodes>
+    <edges>
+      <edge source="C1,t" target="C2,t" id="0" />
+      <edge source="C1,t" target="C3,t" id="1" />
+      <edge source="C1,t" target="C1,h" id="2" />
+      <edge source="C1,h" target="C14,h" id="3" />
+      <edge source="C1,h" target="C1,t" id="4" />
+      <edge source="C2,t" target="C4,t" id="5" />
+      <edge source="C2,t" target="C6,t" id="6" />
+      <edge source="C2,t" target="C2,h" id="7" />
+      <edge source="C2,h" target="C1,h" id="8" />
+      <edge source="C2,h" target="C2,t" id="9" />
+      <edge source="C3,t" target="C5,t" id="10" />
+      <edge source="C3,t" target="C3,h" id="11" />
+      <edge source="C3,h" target="C1,h" id="12" />
+      <edge source="C3,h" target="C3,t" id="13" />
+      <edge source="C4,t" target="C7,t" id="14" />
+      <edge source="C4,t" target="C4,h" id="15" />
+      <edge source="C4,h" target="C2,h" id="16" />
+      <edge source="C4,h" target="C4,t" id="17" />
+      <edge source="C5,t" target="C7,t" id="18" />
+      <edge source="C5,t" target="C5,h" id="19" />
+      <edge source="C5,h" target="C3,h" id="20" />
+      <edge source="C5,h" target="C5,t" id="21" />
+      <edge source="C6,t" target="T1,t" id="22" />
+      <edge source="C6,t" target="C6,h" id="23" />
+      <edge source="C6,h" target="C2,h" id="24" />
+      <edge source="C6,h" target="C6,t" id="25" />
+      <edge source="C7,t" target="C10,t" id="26" />
+      <edge source="C7,t" target="C9,t" id="27" />
+      <edge source="C7,t" target="C7,h" id="28" />
+      <edge source="C7,h" target="C4,h" id="29" />
+      <edge source="C7,h" target="C5,h" id="30" />
+      <edge source="C7,h" target="C7,t" id="31" />
+      <edge source="C8,h" target="C7,h" id="32" />
+      <edge source="C9,t" target="C12,t" id="33" />
+      <edge source="C10,t" target="T4,t" id="34" />
+      <edge source="C10,t" target="C10,h" id="35" />
+      <edge source="C10,h" target="C7,h" id="36" />
+      <edge source="C10,h" target="C10,t" id="37" />
+      <edge source="C11,h" target="C8,h" id="38" />
+      <edge source="C12,t" target="C15,t" id="39" />
+      <edge source="C12,t" target="C16,t" id="40" />
+      <edge source="C13,h" target="C11,h" id="41" />
+      <edge source="C14,h" target="C13,h" id="42" />
+      <edge source="C15,t" target="C1,t" id="43" />
+      <edge source="C15,t" target="C15,h" id="44" />
+      <edge source="C16,t" target="C17,t" id="45" />
+      <edge source="C16,t" target="C16,h" id="46" />
+      <edge source="C16,h" target="C11,h" id="47" />
+      <edge source="C16,h" target="C16,t" id="48" />
+      <edge source="C17,t" target="C18,t" id="49" />
+      <edge source="C17,t" target="C19,t" id="50" />
+      <edge source="C17,t" target="C17,h" id="51" />
+      <edge source="C17,h" target="C16,h" id="52" />
+      <edge source="C17,h" target="C17,t" id="53" />
+      <edge source="C18,t" target="T2,t" id="54" />
+      <edge source="C18,t" target="C18,h" id="55" />
+      <edge source="C18,h" target="C17,h" id="56" />
+      <edge source="C18,h" target="C18,t" id="57" />
+      <edge source="C19,h" target="C17,h" id="58" />
+      <edge source="C19,h" target="C19,t" id="59" />
+      <edge source="C19,t" target="T3,t" id="60" />
+      <edge source="C19,t" target="C19,h" id="61" />
+      <edge source="T1,h" target="C6,h" id="62" />
+      <edge source="T1,h" target="T1,t" id="63" />
+      <edge source="T2,h" target="C18,h" id="64" />
+      <edge source="T2,h" target="T2,t" id="65" />
+      <edge source="T3,h" target="C19,h" id="66" />
+      <edge source="T3,h" target="T3,t" id="67" />
+      <edge source="T4,h" target="C10,h" id="68" />
+      <edge source="T4,h" target="T4,t" id="69" />
+      <edge source="T1,t" target="T1,h" id="70" />
+      <edge source="T4,t" target="T4,h" id="71" />
+      <edge source="T2,t" target="T2,h" id="72" />
+      <edge source="T3,t" target="T3,h" id="73" />
+      <edge source="C15,h" target="C15,t" id="74" />
+    </edges>
+  </graph>
+</gexf>

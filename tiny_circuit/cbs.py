@@ -20,7 +20,7 @@ class Collision:
         """Initializes an empty collision.
 
         Args:
-            collision_type: Collision type (node or edge).
+            `collision_type`: Collision type (node or edge).
         """
         self.collision_type = collision_type
         self.nodes = []
@@ -30,9 +30,9 @@ class Collision:
         """Configures this object as a node collision.
 
         Args:
-            node: Node shared by the colliding agents.
-            agents: Agents involved in the collision.
-            time: Simulation time of the collision.
+            `node`: Node shared by the colliding agents.
+            `agents`: Agents involved in the collision.
+            `time`: Simulation time of the collision.
         """
         self.nodes.append(node)
         for agent in agents:
@@ -48,9 +48,9 @@ class Collision:
         """Configures this object as an edge-swap collision.
 
         Args:
-            nodes: The two nodes involved in the opposite swap.
-            agents: Agents involved in the collision.
-            time: Simulation time of the collision.
+            `nodes`: The two nodes involved in the opposite swap.
+            `agents`: Agents involved in the collision.
+            `time`: Simulation time of the collision.
         """
         for node in nodes:
             self.nodes.append(node)
@@ -143,9 +143,9 @@ class Constraint:
         """Checks whether a transition is forbidden by the constraint.
 
         Args:
-            current_node: Source node of the transition.
-            next_node: Destination node of the transition.
-            next_time: Arrival time at destination node.
+            `current_node`: Source node of the transition.
+            `next_node`: Destination node of the transition.
+            `next_time`: Arrival time at destination node.
 
         Returns:
             True if the transition is forbidden, otherwise False.
@@ -174,7 +174,7 @@ class Node:
         """Initializes a graph node.
 
         Args:
-            node_id: Unique node identifier.
+            `node_id`: Unique node identifier.
         """
         self.node_id = node_id
         self.is_occupied: bool = False
@@ -183,7 +183,7 @@ class Node:
         """Sets successor nodes and transition costs.
 
         Args:
-            weight_by_successor_node: Mapping successor -> traversal cost.
+            `weight_by_successor_node`: Mapping successor -> traversal cost.
         """
         self.weight_by_successor_node = weight_by_successor_node
 
@@ -211,7 +211,7 @@ class Graph:
         """Builds a weighted directed graph from an adjacency mapping.
 
         Args:
-            adjacency_matrix: Mapping `node -> {successor: cost}`.
+            `adjacency_matrix`: Mapping `node -> {successor: cost}`.
         """
         self.nodes = []
         self.node_by_id = {}
@@ -235,7 +235,7 @@ class Graph:
         """Returns a node from its identifier.
 
         Args:
-            node_id: Identifier of the requested node.
+            `node_id`: Identifier of the requested node.
 
         Returns:
             The matching node.
@@ -258,9 +258,9 @@ class Agent:
         """Initializes an agent with a start and a target node.
 
         Args:
-            agent_id: Agent identifier.
-            start_node: Start node.
-            target_node: Target node.
+            `agent_id`: Agent identifier.
+            `start_node`: Start node.
+            `target_node`: Target node.
         """
         self.agent_id = agent_id
         self.start_node = start_node
@@ -306,8 +306,8 @@ class Scenario:
         """Computes initial unconstrained shortest paths for all agents.
 
         Args:
-            graph: Movement graph.
-            agents: Agents to route.
+            `graph`: Movement graph.
+            `agents`: Agents to route.
 
         Raises:
             Exception: If at least one agent cannot be routed.
@@ -427,7 +427,7 @@ class Scenario:
         """Adds a constraint to the scenario if it is not already present.
 
         Args:
-            constraint: Constraint to add.
+            `constraint`: Constraint to add.
 
         Returns:
             True if the constraint was added, otherwise False.
@@ -441,7 +441,7 @@ class Scenario:
         """Copies paths, cost, and constraints from another scenario.
 
         Args:
-            scenario: Source scenario to copy.
+            `scenario`: Source scenario to copy.
         """
         new_paths = {}
         for agent, path in scenario.paths_by_agent.items():
@@ -454,8 +454,8 @@ class Scenario:
         """Replaces the path of one agent.
 
         Args:
-            agent: Agent to update.
-            path: New path for the agent.
+            `agent`: Agent to update.
+            `path`: New path for the agent.
         """
         self.paths_by_agent[agent] = path
 
@@ -463,7 +463,7 @@ class Scenario:
         """Updates the scenario total cost.
 
         Args:
-            cost: New cost.
+            `cost`: New cost.
         """
         self.cost = cost
 
@@ -479,7 +479,7 @@ class Scenario:
         """Filters constraints applicable to one agent.
 
         Args:
-            agent: Agent for which to retrieve constraints.
+            `agent`: Agent for which to retrieve constraints.
 
         Returns:
             List of constraints for this agent.
@@ -510,7 +510,7 @@ def select_minimum_cost_scenario(scenarios: list[Scenario]) -> Scenario:
     """Returns the minimum-cost scenario.
 
     Args:
-        scenarios: Non-empty list of candidate scenarios.
+        `scenarios`: Non-empty list of candidate scenarios.
 
     Returns:
         Scenario with the lowest cost.
@@ -528,7 +528,7 @@ def build_standard_constraints(collision: Collision) -> list[Constraint]:
     """Builds the two standard CBS constraints for one collision.
 
     Args:
-        collision: Collision to resolve.
+        `collision`: Collision to resolve.
 
     Returns:
         The two generated constraints (one per involved agent).
@@ -567,8 +567,8 @@ def get_minimum_distance_state(
     """Returns the state with the smallest distance among candidates.
 
     Args:
-        distances: Current distance by state.
-        candidate_states: Candidate states.
+        `distances`: Current distance by state.
+        `candidate_states`: Candidate states.
 
     Returns:
         Candidate state with minimal distance.
@@ -587,14 +587,14 @@ def is_transition_allowed_by_constraints(
     next_node: Node,
     constraints: list[Constraint],
     next_time: int,
-):
+) -> bool:
     """Checks whether a transition satisfies all constraints.
 
     Args:
-        current_node: Current node.
-        next_node: Candidate successor node.
-        constraints: Constraints to apply.
-        next_time: Transition time to successor node.
+        `current_node`: Current node.
+        `next_node`: Candidate successor node.
+        `constraints`: Constraints to apply.
+        `next_time`: Transition time to successor node.
 
     Returns:
         True if the transition is allowed, otherwise False.
@@ -614,10 +614,10 @@ def dijkstra(
     """Runs Dijkstra on a time-expanded state space with constraints.
 
     Args:
-        graph: Movement graph.
-        start_node: Start node.
-        target_node: Target node.
-        constraints: Temporal constraints to satisfy.
+        `graph`: Movement graph.
+        `start_node`: Start node.
+        `target_node`: Target node.
+        `constraints`: Temporal constraints to satisfy.
 
     Returns:
         A tuple `(path, cost)` where `path` is the found path and `cost` is
@@ -691,8 +691,8 @@ def run_cbs(graph: Graph, agents: list[Agent]) -> Scenario:
     """Solves multi-agent routing with Conflict-Based Search.
 
     Args:
-        graph: Movement graph.
-        agents: Agents to route.
+        `graph`: Movement graph.
+        `agents`: Agents to route.
 
     Returns:
         A collision-free scenario.
@@ -734,4 +734,4 @@ def run_cbs(graph: Graph, agents: list[Agent]) -> Scenario:
                 new_scenario.calculate_cost()
                 new_scenario.detect_collisions()
                 open_scenarios.append(new_scenario)
-    raise Exception("Routing is impossible")
+    raise Exception("No collision-free routing is possible")

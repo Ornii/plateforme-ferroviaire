@@ -1,0 +1,651 @@
+{
+  "structures": [
+    {
+      "type": "canton",
+      "id": "C1",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A1",
+          "successeur_position_entree": "talon"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A5",
+          "successeur_position_entree": "talon"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C2",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A2",
+          "successeur_position_entree": "talon"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A1",
+          "successeur_position_entree": "direct"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C3",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "croisement sans aiguille",
+          "id": "X1",
+          "successeur_position_entree": "4"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A1",
+          "successeur_position_entree": "deviee"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C4",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A3",
+          "successeur_position_entree": "direct"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A2",
+          "successeur_position_entree": "direct"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C5",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A3",
+          "successeur_position_entree": "deviee"
+        },
+        {
+          "sens": "horaire",
+          "type": "croisement sans aiguille",
+          "id": "X1",
+          "successeur_position_entree": "2"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C6",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "terminal",
+          "id": "T1"
+        },
+        {
+          "sens": "horaire",
+          "type": "croisement sans aiguille",
+          "id": "X1",
+          "successeur_position_entree": "3"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C7",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage triple",
+          "id": "P1",
+          "successeur_position_entree": "talon"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A3",
+          "successeur_position_entree": "talon"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C8",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "aiguillage triple",
+          "id": "P1",
+          "successeur_position_entree": "droite"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C9",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C12"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C10",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "terminal",
+          "id": "T4"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage triple",
+          "id": "P1",
+          "successeur_position_entree": "gauche"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C11",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C8"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C12",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "croisement avec aiguille",
+          "id": "D1",
+          "successeur_position_entree": "2"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C13",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A4",
+          "successeur_position_entree": "direct"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C14",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C13"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C15",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A5",
+          "successeur_position_entree": "deviee"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C16",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C17"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage avec aiguille",
+          "id": "D1",
+          "successeur_position_entree": "1"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C17",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "aiguillage",
+          "id": "A6",
+          "successeur_position_entree": "talon"
+        },
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C16"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C18",
+      "successeurs": [
+        {
+          "sens": "trigo",
+          "type": "terminal",
+          "id": "T2"
+        },
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A6",
+          "successeur_position_entree": "direct"
+        }
+      ]
+    },
+    {
+      "type": "canton",
+      "id": "C19",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A6",
+          "successeur_position_entree": "deviee"
+        },
+        {
+          "sens": "trigo",
+          "type": "terminal",
+          "id": "T3"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A1",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C1"
+        },
+        {
+          "position_sortie": "direct",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C2"
+        },
+        {
+          "position_sortie": "deviee",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C3"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A2",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C2"
+        },
+        {
+          "position_sortie": "direct",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C4"
+        },
+        {
+          "position_sortie": "deviee",
+          "sens": "trigo",
+          "type": "croisement sans aiguille",
+          "id": "X1",
+          "successeur_position_entree": "1"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A3",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C7"
+        },
+        {
+          "position_sortie": "direct",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C4"
+        },
+        {
+          "position_sortie": "deviee",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C5"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A4",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C11"
+        },
+        {
+          "position_sortie": "deviee",
+          "sens": "trigo",
+          "type": "croisement avec aiguille",
+          "id": "D1",
+          "successeur_position_entree": "3"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A5",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C1"
+        },
+        {
+          "position_sortie": "direct",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C14"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage",
+      "id": "A6",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C17"
+        },
+        {
+          "position_sortie": "direct",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C18"
+        },
+        {
+          "position_sortie": "deviee",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C19"
+        }
+      ]
+    },
+    {
+      "type": "aiguillage triple",
+      "id": "P1",
+      "successeurs": [
+        {
+          "position_sortie": "talon",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C7"
+        },
+        {
+          "position_sortie": "gauche",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C10"
+        },
+        {
+          "position_sortie": "milieu",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C9"
+        }
+      ]
+    },
+    {
+      "type": "croisement sans aiguille",
+      "id": "X1",
+      "successeurs": [
+        {
+          "position_sortie": "3",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C6"
+        },
+        {
+          "position_sortie": "4",
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C3"
+        },
+        {
+          "position_sortie": "1",
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A2",
+          "successeur_position_entree": "deviee"
+        },
+        {
+          "position_sortie": "2",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C5"
+        }
+      ]
+    },
+    {
+      "type": "croisement avec aiguille",
+      "id": "D1",
+      "successeurs": [
+        {
+          "position_sortie": "3",
+          "sens": "horaire",
+          "type": "aiguillage",
+          "id": "A4",
+          "successeur_position_entree": "deviee"
+        },
+        {
+          "position_sortie": "4",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C15"
+        },
+        {
+          "position_sortie": "1",
+          "sens": "trigo",
+          "type": "canton",
+          "id": "C16"
+        }
+      ]
+    },
+    {
+      "type": "terminal",
+      "id": "T1",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C6"
+        }
+      ]
+    },
+    {
+      "type": "terminal",
+      "id": "T2",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C18"
+        }
+      ]
+    },
+    {
+      "type": "terminal",
+      "id": "T3",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C19"
+        }
+      ]
+    },
+    {
+      "type": "terminal",
+      "id": "T4",
+      "successeurs": [
+        {
+          "sens": "horaire",
+          "type": "canton",
+          "id": "C10"
+        }
+      ]
+    }
+  ],
+  "graphe type": {
+    "edge": [
+      "aiguillage",
+      "aiguillage triple",
+      "croisement sans aiguille",
+      "croisement avec aiguille"
+    ],
+    "node": ["canton", "terminal"]
+  },
+  "route": {
+    "aiguillage": [
+      {
+        "position_entree": "talon",
+        "positions_sortie": ["deviee", "direct"]
+      },
+      {
+        "position_entree": "deviee",
+        "positions_sortie": ["talon"]
+      },
+      {
+        "position_entree": "direct",
+        "positions_sortie": ["talon"]
+      }
+    ],
+    "croisement sans aiguille": [
+      {
+        "position_entree": "1",
+        "positions_sortie": ["3"]
+      },
+      {
+        "position_entree": "2",
+        "positions_sortie": ["4"]
+      },
+      {
+        "position_entree": "3",
+        "positions_sortie": ["1"]
+      },
+      {
+        "position_entree": "4",
+        "positions_sortie": ["2"]
+      }
+    ],
+    "croisement avec aiguille": [
+      {
+        "position_entree": "1",
+        "positions_sortie": ["2", "3"]
+      },
+      {
+        "position_entree": "2",
+        "positions_sortie": ["1", "4"]
+      },
+      {
+        "position_entree": "3",
+        "positions_sortie": ["1", "4"]
+      },
+      {
+        "position_entree": "4",
+        "positions_sortie": ["2", "3"]
+      }
+    ],
+    "aiguillage triple": [
+      {
+        "position_entree": "talon",
+        "positions_sortie": ["droite", "milieu", "gauche"]
+      },
+      {
+        "position_entree": "droite",
+        "positions_sortie": ["talon"]
+      },
+      {
+        "position_entree": "milieu",
+        "positions_sortie": ["talon"]
+      },
+      {
+        "position_entree": "gauche",
+        "positions_sortie": ["talon"]
+      }
+    ]
+  },
+  "u-turn": [
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C10",
+    "C15",
+    "C16",
+    "C17",
+    "C18",
+    "C19",
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ]
+}
