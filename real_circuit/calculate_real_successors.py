@@ -217,3 +217,4 @@ if __name__ == "__main__":
     successors_by_node = map_successors(node_ids, node_props_by_id)
     graph = nx.DiGraph(successors_by_node)
     nx.write_gexf(graph, rf"{BASE_DIR}\graph.gexf")
+    print("test")
