@@ -69,7 +69,7 @@ def handle_node_successors(node_id, structure, direction, successors_by_node):
 
 def handle_edge_connectors(
     node_id, structure, direction, successors_by_node, entrance_position
-):
+) -> None:
     """Resolve successors when traversing an edge connector.
 
     Args:
@@ -109,7 +109,7 @@ def handle_edge_connectors(
         )
 
 
-def handle_uturn_node(node_id, structure, direction, successors_by_node):
+def handle_uturn_node(node_id, structure, direction, successors_by_node) -> None:
     """Add U-turn successor if the current structure is configured as U-turn.
 
     Args:
@@ -156,7 +156,7 @@ def add_successor(
         break
 
 
-def create_node_ids_and_props():
+def create_node_ids_and_props() -> tuple[list[str], dict[str,str]]:
     """Create node identifiers and associated properties.
 
     Returns:
@@ -217,3 +217,4 @@ if __name__ == "__main__":
     successors_by_node = map_successors(node_ids, node_props_by_id)
     graph = nx.DiGraph(successors_by_node)
     nx.write_gexf(graph, rf"{BASE_DIR}\graph.gexf")
+    print(successors_by_node)
