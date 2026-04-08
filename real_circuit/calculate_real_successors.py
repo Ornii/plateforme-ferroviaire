@@ -109,7 +109,12 @@ def handle_edge_connectors(
         )
 
 
-def handle_uturn_node(node_id, structure, direction, successors_by_node) -> None:
+def handle_uturn_node(
+    node_id: str,
+    structure: dict[str, str | list[dict[str, str]]],
+    direction: str,
+    successors_by_node: dict[str, list[str]],
+) -> None:
     """Add U-turn successor if the current structure is configured as U-turn.
 
     Args:
