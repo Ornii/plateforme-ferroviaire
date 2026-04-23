@@ -170,10 +170,10 @@ class Constraint:
 
 
 class Canton:
-    """Graph canton with weighted successors."""
+    """Circuit canton with weighted successors."""
 
     def __init__(self, canton_id: str) -> None:
-        """Initializes a graph canton.
+        """Initializes a circuit canton.
 
         Args:
             `canton_id`: Unique canton identifier.
@@ -206,11 +206,11 @@ class Canton:
         return self.weight_by_successor_canton
 
 
-class Graph:
-    """Directed weighted graph wrapper used by routing algorithms."""
+class Circuit:
+    """Directed weighted circuit wrapper used by routing algorithms."""
 
     def __init__(self, adjacency_matrix: dict[str, dict[str, int]]) -> None:
-        """Builds a weighted directed graph from an adjacency mapping.
+        """Builds a weighted directed circuit from an adjacency mapping.
 
         Args:
             `adjacency_matrix`: Mapping `canton -> {successor: cost}`.
@@ -245,7 +245,7 @@ class Graph:
         return self.canton_by_id[canton_id]
 
     def get_cantons(self) -> list[Canton]:
-        """Returns all graph cantons.
+        """Returns all circuit cantons.
 
         Returns:
             List of cantons.
@@ -257,7 +257,11 @@ class Train:
     """Train definition with start and target cantons."""
 
     def __init__(
-        self, train_id: str, start_canton: Canton, target_canton: Canton
+        self,
+        train_id: str,
+        start_canton: Canton,
+        target_canton: Canton,
+        start_time: int = 0,
     ) -> None:
         """Initializes an train with a start and a target canton.
 
@@ -268,6 +272,7 @@ class Train:
         """
         self.train_id = train_id
         self.start_canton = start_canton
+        self.start_time = start_time
         self.current_canton = start_canton
         self.target_canton = target_canton
 
@@ -306,11 +311,11 @@ class Scenario:
         self.cost = 0
         self.paths_by_train = {}
 
-    def route(self, graph: Graph, trains: list[Train]) -> None:
+    def route(self, circuit: Circuit, trains: list[Train]) -> None:
         """Computes initial unconstrained shortest paths for all trains.
 
         Args:
-            `graph`: Movement graph.
+            `circuit`: Movement circuit.
             `trains`: Trains to route.
 
         Raises:
@@ -319,7 +324,7 @@ class Scenario:
         self.cost = 0
         for train in trains:
             self.paths_by_train[train], cost = dijkstra(
-                graph, train.start_canton, train.target_canton
+                circuit, train.start_canton, train.target_canton
             )
             if cost == -1:
                 raise Exception("Routing is impossible")
@@ -614,7 +619,7 @@ def is_transition_allowed_by_constraints(
 
 
 def dijkstra(
-    graph: Graph,
+    circuit: Circuit,
     start_canton: Canton,
     target_canton: Canton,
     constraints: list[Constraint] = [],
@@ -622,7 +627,7 @@ def dijkstra(
     """Runs Dijkstra on a time-expanded state space with constraints.
 
     Args:
-        `graph`: Movement graph.
+        `circuit`: Movement circuit.
         `start_canton`: Start canton.
         `target_canton`: Target canton.
         `constraints`: Temporal constraints to satisfy.
@@ -635,7 +640,7 @@ def dijkstra(
     max_constraint_time = max(
         [constraint.get_time() for constraint in constraints] + [0]
     )
-    max_time = max_constraint_time + len(graph.get_cantons())
+    max_time = max_constraint_time + len(circuit.get_cantons())
 
     not_visited_states = [(start_canton, 0)]
     predecessors = {(start_canton, 0): (start_canton, 0)}
@@ -695,11 +700,11 @@ def dijkstra(
     return result[::-1], distances[target_state]
 
 
-def run_cbs(graph: Graph, trains: list[Train]) -> Scenario:
+def run_cbs(circuit: Circuit, trains: list[Train]) -> Scenario:
     """Solves multi-train routing with Conflict-Based Search.
 
     Args:
-        `graph`: Movement graph.
+        `circuit`: Movement circuit.
         `trains`: Trains to route.
 
     Returns:
@@ -710,7 +715,7 @@ def run_cbs(graph: Graph, trains: list[Train]) -> Scenario:
     """
     open_scenarios = []
     scenario = Scenario()
-    scenario.route(graph, trains)
+    scenario.route(circuit, trains)
     scenario.detect_collisions()
     open_scenarios.append(scenario)
 
@@ -736,7 +741,7 @@ def run_cbs(graph: Graph, trains: list[Train]) -> Scenario:
             constraints_of_train = new_scenario.get_constraints_for_train(train)
 
             new_path, _ = dijkstra(
-                graph, start_canton, target_canton, constraints_of_train
+                circuit, start_canton, target_canton, constraints_of_train
             )
 
             if len(new_path) > 0:
