@@ -181,11 +181,7 @@ def handle_edge_connectors(
 
 
 def handle_uturn_node(
-    structures: list[dict[str, str | list[dict[str, str]]]],
-    types_by_category: dict[str, list[str]],
-    entrance_exit_by_type: dict[str, list[dict[str, list[str]]]],
     uturn_node_ids: list[str],
-    id_by_position: dict[str, str],
     node_id: str,
     structure: dict[str, str | list[dict[str, str]]],
     direction: str,
@@ -251,11 +247,7 @@ def add_successor(
                 connectors_by_nodes,
             )
             handle_uturn_node(
-                structures,
-                types_by_category,
-                entrance_exit_by_type,
                 uturn_node_ids,
-                id_by_position,
                 node_id,
                 structure,
                 direction,
@@ -283,9 +275,7 @@ def add_successor(
 def build_graph_nodes(
     structures: list[dict[str, str | list[dict[str, str]]]],
     types_by_category: dict[str, list[str]],
-    entrance_exit_by_type: dict[str, list[dict[str, list[str]]]],
     uturn_node_ids: list[str],
-    id_by_position: dict[str, str],
 ) -> tuple[list[str], dict[str, str]]:
     """Create node identifiers and associated properties.
 
@@ -353,9 +343,7 @@ def create_circuit(
     node_ids, node_props_by_id = build_graph_nodes(
         structures,
         types_by_category,
-        entrance_exit_by_type,
         uturn_node_ids,
-        id_by_position,
     )
     successors_by_node, connectors_by_nodes = build_successor_map(
         structures,
