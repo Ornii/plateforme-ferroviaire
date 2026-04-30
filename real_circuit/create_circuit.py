@@ -112,6 +112,8 @@ class Canton:
         self.allowed_directions = allowed_directions
         self.is_uturn_allowed = is_uturn_allowed == "true"
         self.next_structures: list[tuple[Structure, str, str]] = []
+        self.is_occupied = False
+        self.is_reserved = False
 
     def add_next_structures(
         self, structure: Structure, via_position: str, to_position: str
@@ -192,6 +194,8 @@ class Aiguillage:
     ) -> None:
         self.id = id
         self.next_structures: list[tuple[Structure, str, str]] = []
+        self.is_occupied = False
+        self.is_reserved = False
 
     def add_next_structures(
         self, structure: Structure, via_position: str, to_position: str
@@ -231,6 +235,8 @@ class AiguillageTriple:
     ) -> None:
         self.id = id
         self.next_structures: list[tuple[Structure, str, str]] = []
+        self.is_occupied = False
+        self.is_reserved = False
 
     def add_next_structures(
         self, structure: Structure, via_position: str, to_position: str
@@ -274,6 +280,8 @@ class CroisementSansAiguille:
     ) -> None:
         self.id = id
         self.next_structures: list[tuple[Structure, str, str]] = []
+        self.is_occupied = False
+        self.is_reserved = False
 
     def add_next_structures(
         self, structure: Structure, via_position: str, to_position: str
@@ -317,6 +325,8 @@ class CroisementAvecAiguille:
     ) -> None:
         self.id = id
         self.next_structures: list[tuple[Structure, str, str]] = []
+        self.is_occupied = False
+        self.is_reserved = False
 
     def add_next_structures(
         self, structure: Structure, via_position: str, to_position: str
