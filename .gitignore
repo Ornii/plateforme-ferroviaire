@@ -1,4 +1,11 @@
 __pycache__/
+test/
 *.png
 *.jpg
 *.jpeg
+*.aux
+*.log
+*.toc
+*.gz
+*.synctex
+*.out
