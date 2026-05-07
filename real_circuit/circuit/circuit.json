@@ -312,17 +312,17 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C1"
       },
       {
         "via_position_sortie": "direct",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C2"
       },
       {
         "via_position_sortie": "deviee",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C3"
       }
     ]
@@ -333,12 +333,12 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C2"
       },
       {
         "via_position_sortie": "direct",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C4"
       },
       {
@@ -354,17 +354,17 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C7"
       },
       {
         "via_position_sortie": "direct",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C4"
       },
       {
         "via_position_sortie": "deviee",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C5"
       }
     ]
@@ -375,7 +375,7 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C11"
       },
       {
@@ -391,12 +391,12 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C1"
       },
       {
         "via_position_sortie": "direct",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C14"
       }
     ]
@@ -407,17 +407,17 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C17"
       },
       {
         "via_position_sortie": "direct",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C18"
       },
       {
         "via_position_sortie": "deviee",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C19"
       }
     ]
@@ -428,17 +428,17 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "talon",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C7"
       },
       {
         "via_position_sortie": "gauche",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C10"
       },
       {
         "via_position_sortie": "milieu",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C9"
       }
     ]
@@ -449,12 +449,12 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "3",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C6"
       },
       {
         "via_position_sortie": "4",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C3"
       },
       {
@@ -464,7 +464,7 @@
       },
       {
         "via_position_sortie": "2",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C5"
       }
     ]
@@ -480,12 +480,12 @@
       },
       {
         "via_position_sortie": "4",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C15"
       },
       {
         "via_position_sortie": "1",
-        "structure_suivante_position_entree": "canton_trigo",
+        "structure_suivante_position_entree": "canton_horaire",
         "id": "C16"
       }
     ]
@@ -496,7 +496,7 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "terminal",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C6"
       }
     ]
@@ -507,7 +507,7 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "terminal",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C18"
       }
     ]
@@ -518,7 +518,7 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "terminal",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C19"
       }
     ]
@@ -529,7 +529,7 @@
     "structures_suivantes": [
       {
         "via_position_sortie": "terminal",
-        "structure_suivante_position_entree": "canton_horaire",
+        "structure_suivante_position_entree": "canton_trigo",
         "id": "C10"
       }
     ]
