@@ -11,7 +11,6 @@ from trains.dijkstra import dijsktra
 from real_circuit.circuit.create_circuit import (
     Circuit,
     Structure,
-    StructureType,
 )
 
 BASE_DIR = str(Path(__file__).parent.resolve())
@@ -83,14 +82,14 @@ class Train:
     def avance(self):
         pass
 
-    def go_to_path(self, path: list[Structure]):
+    def go_to_path(self, path: list[tuple[Structure, str]]):
         """init"""
-        current_structure = path[0]
+        current_structure = path[0][0]
         next_structures = path.copy()
         next_structures.pop(0)
-        next_structure = next_structures[0]
+        next_structure = next_structures[0][0]
         current_structure.prepare_of_arrival(next_structure)
-        next_next_structure = next_structures[1]
+        next_next_structure = next_structures[1][0]
         next_structure.prepare_of_arrival(next_next_structure)
         self.avance()
         """loop"""
@@ -103,8 +102,8 @@ class Train:
                 self.position = current_structure
                 current_structure.set_occupation(True)
 
-                next_structure = next_structures[0]
-                next_next_structure = next_structures[1]
+                next_structure = next_structures[0][0]
+                next_next_structure = next_structures[1][0]
                 next_structure.prepare_of_arrival(next_next_structure)
 
     def calculate_path(self, circuit: Circuit) -> list[tuple[Structure, str]]:
@@ -113,7 +112,6 @@ class Train:
 
 
 def detect_train(next_structure, next_next_structure):
-    id = "..."
     pass
 
 
@@ -149,7 +147,7 @@ def route_train_naive(circuit: Circuit, trains: Trains):
         t_current = time.time() - t_init
         train_to_go = trains.select_train_to_leave(t_current)
 
-        if train_to_go is None:
+        if train_to_go is None:  # threading relative issues
             continue
         else:
             assert train_to_go is not None
