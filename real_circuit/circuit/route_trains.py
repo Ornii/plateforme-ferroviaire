@@ -6,14 +6,12 @@ from json import load
 from pathlib import Path
 from typing import Any, TypedDict
 
+from trains.dijkstra import dijsktra
+
 from real_circuit.circuit.create_circuit import (
-    Aiguillage,
-    AiguillageTriple,
-    Canton,
     Circuit,
-    CroisementAvecAiguille,
     Structure,
-    Terminal,
+    StructureType,
 )
 
 BASE_DIR = str(Path(__file__).parent.resolve())
@@ -91,9 +89,9 @@ class Train:
         next_structures = path.copy()
         next_structures.pop(0)
         next_structure = next_structures[0]
-        prepare_structure_of_arrival(current_structure, next_structure)
+        current_structure.prepare_of_arrival(next_structure)
         next_next_structure = next_structures[1]
-        prepare_structure_of_arrival(next_structure, next_next_structure)
+        next_structure.prepare_of_arrival(next_next_structure)
         self.avance()
         """loop"""
         while self.position != self.objective_position:
@@ -107,10 +105,10 @@ class Train:
 
                 next_structure = next_structures[0]
                 next_next_structure = next_structures[1]
-                prepare_structure_of_arrival(next_structure, next_next_structure)
+                next_structure.prepare_of_arrival(next_next_structure)
 
-    def calculate_path(self, circuit: Circuit):
-        path = djisktra(circuit, self.starting_position, self.objective_position)
+    def calculate_path(self, circuit: Circuit) -> list[tuple[Structure, str]]:
+        path = dijsktra(circuit, self.starting_position, self.objective_position)
         return path
 
 
@@ -140,19 +138,9 @@ def create_trains(circuit: Circuit, train_filename: str):
         create_train(circuit, trains, dict_train)
 
 
-def reserve_structures(path: list[Structure]):
-    for structure in path:
+def reserve_structures(path: list[tuple[Structure, str]]):
+    for structure, _ in path:
         structure.set_reservation(True)
-
-
-def prepare_structure_of_arrival(
-    structure: Structure, next_structure: Structure
-) -> None:
-    if isinstance(
-        structure,
-        (Aiguillage, AiguillageTriple, CroisementAvecAiguille),
-    ):
-        structure.prepare(next_structure)
 
 
 def route_train_naive(circuit: Circuit, trains: Trains):

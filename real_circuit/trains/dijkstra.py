@@ -1,11 +1,6 @@
 from real_circuit.circuit.create_circuit import (
-    Aiguillage,
-    AiguillageTriple,
-    Canton,
     Circuit,
-    CroisementAvecAiguille,
     Structure,
-    Terminal,
     create_circuit,
 )
 
@@ -20,7 +15,9 @@ def find_shortest_id(distance_by_id: dict[str, float], chosen_ids: list[str]) ->
     return best_id
 
 
-def dijsktra(circuit: Circuit, start: Structure, end: Structure):
+def dijsktra(
+    circuit: Circuit, start: Structure, end: Structure
+) -> list[tuple[Structure, str]]:
     assert not start.is_reserved
     ids = list(circuit.structure_by_id.keys())
     predecessor = {}
@@ -53,15 +50,37 @@ def dijsktra(circuit: Circuit, start: Structure, end: Structure):
                 distance_with_predecessor[next_structure[0].id] = (
                     distance_with_predecessor[shortest_id] + 1
                 )
-    result = []
+    result_id = []
     id = end.id
-    result.append(id)
+    result_id.append(id)
     while id != start.id:
         id = predecessor[id]
-        result.append(id)
-    return result[::-1]
+        result_id.append(id)
+    result_id = result_id[::-1]
+    result = get_real_path_with_ids(circuit, result_id)
+    return result
+
+
+def get_real_path_with_ids(
+    circuit: Circuit, path_ids: list[str]
+) -> list[tuple[Structure, str]]:
+    result = []
+    for i in range(len(path_ids) - 1):
+        current_structure_id = path_ids[i]
+        current_structure = circuit.find_structure(current_structure_id)
+        next_structure_id = path_ids[i + 1]
+        next_structure = circuit.find_structure(next_structure_id)
+        for successor_structure, entry_id, exit_id in current_structure.next_structures:
+            if successor_structure == next_structure:
+                result.append((current_structure, entry_id))
+                result.append((next_structure, exit_id))
+    return result
 
 
 if __name__ == "__main__":
     circuit = create_circuit("circuit.json", "id.json", "route.json")
-    print(dijsktra(circuit, circuit.find_structure("C1"), circuit.find_structure("T4")))
+    path = dijsktra(circuit, circuit.find_structure("C1"), circuit.find_structure("T4"))
+    readable_path = []
+    for structure, position_id in path:
+        readable_path.append((structure.id, position_id))
+    print(readable_path)
