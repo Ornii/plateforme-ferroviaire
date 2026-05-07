@@ -81,10 +81,10 @@ class Structure:
             result_str += "- " + e + "\n"
         return f"Structure is a {self.type.name} with id {self.id}.\nIts next structures are:\n{result_str}"
 
-    def set_reservation(self, is_reserved: bool):
+    def set_reservation(self, is_reserved: bool) -> None:
         self.is_reserved = is_reserved
 
-    def set_occupation(self, is_occupied: bool):
+    def set_occupation(self, is_occupied: bool) -> None:
         self.is_occupied = is_occupied
 
     def add_next_structure(self, structure: Structure, entry_id: str, exit_id: str):
