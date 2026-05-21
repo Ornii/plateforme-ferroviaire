@@ -1,5 +1,5 @@
 #include <Servo.h>
-#include <ModbusRTU.h>
+#include <ModbusRTUSlave.h>
 
 // ---------- Protocole Modbus (coils) ----------
 // 0: Signal TALON (1=GREEN, 0=RED)
@@ -20,18 +20,22 @@ enum class HallDetection : uint8_t {
   TRAIN_WAS_DETECTED = 1,
 };
 
+// TALON
 const int GREEN_LED_TALON_PIN = 2;
 const int RED_LED_TALON_PIN = 3;
 const int HALL_SENSOR_TALON_PIN = 4;
 
+// DIRECT
 const int GREEN_LED_DIRECT_PIN = 5;
 const int RED_LED_DIRECT_PIN = 6;
 const int HALL_SENSOR_DIRECT_PIN = 7;
 
+// DEVIEE
 const int GREEN_LED_DEVIEE_PIN = 8;
 const int RED_LED_DEVIEE_PIN = 9;
 const int HALL_SENSOR_DEVIEE_PIN = 10;
 
+// Aiguille
 const int TENSION_TURNOUT_PIN = A0;
 const int SERVO_TURNOUT_PIN = 11;
 const int TENSION_TURNOUT_THRESHOLD = 700;
@@ -42,26 +46,29 @@ const uint8_t MODBUS_ID = 0x08;
 const unsigned long BAUDRATE = 9600;
 const int LOOP_DELAY_MS = 50;
 
-constexpr uint16_t COIL_SIGNAL_TALON = 0;
-constexpr uint16_t COIL_SIGNAL_DIRECT = 1;
-constexpr uint16_t COIL_SIGNAL_DEVIEE = 2;
-constexpr uint16_t COIL_BLADE = 3;
-constexpr uint16_t COIL_HALL_TALON = 4;
-constexpr uint16_t COIL_HALL_DIRECT = 5;
-constexpr uint16_t COIL_HALL_DEVIEE = 6;
+constexpr uint8_t COIL_SIGNAL_TALON = 0;
+constexpr uint8_t COIL_SIGNAL_DIRECT = 1;
+constexpr uint8_t COIL_SIGNAL_DEVIEE = 2;
+constexpr uint8_t COIL_BLADE = 3;
+constexpr uint8_t COIL_HALL_TALON = 4;
+constexpr uint8_t COIL_HALL_DIRECT = 5;
+constexpr uint8_t COIL_HALL_DEVIEE = 6;
+constexpr uint8_t COILS_COUNT = 7;
+
+bool coils[COILS_COUNT];
 
 Servo servo_turnout;
-ModbusRTU modbus;
+ModbusRTUSlave modbus(Serial);
 TurnoutPosition turnout_position = TurnoutPosition::DIRECT;
 
-void applySignal(uint16_t coilIndex, int greenPin, int redPin) {
-  bool green = modbus.Coil(coilIndex);
+void applySignal(uint8_t coilIndex, int greenPin, int redPin) {
+  bool green = coils[coilIndex];
   digitalWrite(greenPin, green ? HIGH : LOW);
   digitalWrite(redPin, green ? LOW : HIGH);
 }
 
 void applyTurnoutFromCoil() {
-  TurnoutPosition demanded = modbus.Coil(COIL_BLADE) ? TurnoutPosition::DIRECT : TurnoutPosition::DEVIEE;
+  TurnoutPosition demanded = coils[COIL_BLADE] ? TurnoutPosition::DIRECT : TurnoutPosition::DEVIEE;
   if (demanded != turnout_position) {
     if (demanded == TurnoutPosition::DIRECT) {
       servo_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
@@ -77,7 +84,7 @@ void refreshTurnoutPositionFeedback() {
   turnout_position = (tension_turnout >= TENSION_TURNOUT_THRESHOLD)
                         ? TurnoutPosition::DIRECT
                         : TurnoutPosition::DEVIEE;
-  modbus.Coil(COIL_BLADE, turnout_position == TurnoutPosition::DIRECT);
+  coils[COIL_BLADE] = (turnout_position == TurnoutPosition::DIRECT);
 }
 
 void refreshHallSensorsLatched() {
@@ -85,9 +92,9 @@ void refreshHallSensorsLatched() {
   HallDetection direct = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DIRECT_PIN) ^ 1);
   HallDetection deviee = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DEVIEE_PIN) ^ 1);
 
-  if (talon == HallDetection::TRAIN_WAS_DETECTED) modbus.Coil(COIL_HALL_TALON, true);
-  if (direct == HallDetection::TRAIN_WAS_DETECTED) modbus.Coil(COIL_HALL_DIRECT, true);
-  if (deviee == HallDetection::TRAIN_WAS_DETECTED) modbus.Coil(COIL_HALL_DEVIEE, true);
+  if (talon == HallDetection::TRAIN_WAS_DETECTED) coils[COIL_HALL_TALON] = true;
+  if (direct == HallDetection::TRAIN_WAS_DETECTED) coils[COIL_HALL_DIRECT] = true;
+  if (deviee == HallDetection::TRAIN_WAS_DETECTED) coils[COIL_HALL_DEVIEE] = true;
 }
 
 void setup() {
@@ -105,23 +112,16 @@ void setup() {
 
   servo_turnout.attach(SERVO_TURNOUT_PIN);
 
-  Serial.begin(BAUDRATE);
-  modbus.begin(&Serial);
-  modbus.slave(MODBUS_ID);
-
-  modbus.addCoil(COIL_SIGNAL_TALON, false);
-  modbus.addCoil(COIL_SIGNAL_DIRECT, false);
-  modbus.addCoil(COIL_SIGNAL_DEVIEE, false);
-  modbus.addCoil(COIL_BLADE, false);
-  modbus.addCoil(COIL_HALL_TALON, false);
-  modbus.addCoil(COIL_HALL_DIRECT, false);
-  modbus.addCoil(COIL_HALL_DEVIEE, false);
-
+  for (uint8_t i = 0; i < COILS_COUNT; i++) coils[i] = false;
   refreshTurnoutPositionFeedback();
+
+  Serial.begin(BAUDRATE);
+  modbus.configureCoils(coils, COILS_COUNT);
+  modbus.begin(MODBUS_ID, BAUDRATE);
 }
 
 void loop() {
-  modbus.task();
+  modbus.poll();
 
   applySignal(COIL_SIGNAL_TALON, GREEN_LED_TALON_PIN, RED_LED_TALON_PIN);
   applySignal(COIL_SIGNAL_DIRECT, GREEN_LED_DIRECT_PIN, RED_LED_DIRECT_PIN);
