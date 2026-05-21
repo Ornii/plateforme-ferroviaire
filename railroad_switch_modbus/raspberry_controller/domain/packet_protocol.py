@@ -1,27 +1,28 @@
 from __future__ import annotations
 
-from enum import Enum, auto
+from enum import Enum
 
-BLADE_COIL = auto()
+
+BLADE_COIL = 3
 
 
 class HallCoil(Enum):
-    DEVIEE = auto()
-    DIRECT = auto()
-    TALON = auto()
+    TALON = 4
+    DIRECT = 5
+    DEVIEE = 6
 
 
 class SignalCoil(Enum):
-    DEVIEE = auto()
-    DIRECT = auto()
-    TALON = auto()
+    TALON = 0
+    DIRECT = 1
+    DEVIEE = 2
 
 
 class Position(Enum):
-    TALON = auto()
-    DIRECT = auto()
-    DEVIEE = auto()
-    FROG = auto()
+    TALON = 0
+    DIRECT = 1
+    DEVIEE = 2
+    FROG = 3
 
 
 class AiguillePosition(Enum):
