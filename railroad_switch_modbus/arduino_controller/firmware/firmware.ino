@@ -6,10 +6,11 @@
 // 0: Signal TALON (1=GREEN, 0=RED)
 // 1: Signal DIRECT (1=GREEN, 0=RED)
 // 2: Signal DEVIEE (1=GREEN, 0=RED)
-// 3: Aiguille (1=DIRECT, 0=DEVIEE)
-// 4: Hall TALON (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
-// 5: Hall DIRECT (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
-// 6: Hall DEVIEE (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
+// 3: Hall TALON (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
+// 4: Hall DIRECT (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
+// 5: Hall DEVIEE (1=TRAIN_WAS_DETECTED, 0=TRAIN_NOT_DETECTED)
+// 6: Aiguille order (1=DIRECT, 0=DEVIEE)
+// 7: Aiguille feedback (1=DIRECT, 0=DEVIEE)
 
 enum class TurnoutPosition : uint8_t {
   DIRECT = 1,
@@ -46,14 +47,16 @@ const int LOOP_DELAY_MS = 50;
 constexpr uint16_t COIL_SIGNAL_TALON = 0;
 constexpr uint16_t COIL_SIGNAL_DIRECT = 1;
 constexpr uint16_t COIL_SIGNAL_DEVIEE = 2;
-constexpr uint16_t COIL_BLADE = 3;
-constexpr uint16_t COIL_HALL_TALON = 4;
-constexpr uint16_t COIL_HALL_DIRECT = 5;
-constexpr uint16_t COIL_HALL_DEVIEE = 6;
+constexpr uint16_t COIL_HALL_TALON = 3;
+constexpr uint16_t COIL_HALL_DIRECT = 4;
+constexpr uint16_t COIL_HALL_DEVIEE = 5;
+constexpr uint16_t COIL_BLADE_ORDER = 6;
+constexpr uint16_t COIL_BLADE_FEEDBACK = 7;
 
 Servo servo_turnout;
 TurnoutPosition turnout_position = TurnoutPosition::DIRECT;
 int tension_turnout = 0;
+
 
 void applySignalsFromCoils() {
   bool greenDirect = ModbusRTUServer.coilRead(COIL_SIGNAL_DIRECT);
@@ -70,7 +73,7 @@ void applySignalsFromCoils() {
 }
 
 void applyTurnoutFromCoil() {
-  TurnoutPosition demanded = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE));
+  TurnoutPosition demanded = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE_ORDER));
   if (demanded != turnout_position) {
     if (demanded == TurnoutPosition::DIRECT) {
       servo_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
@@ -90,17 +93,24 @@ void refreshTurnoutPosition() {
     turnout_position = TurnoutPosition::DEVIEE;
   }
 
-  ModbusRTUServer.coilWrite(COIL_BLADE, turnout_position == TurnoutPosition::DIRECT);
+  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::DIRECT);
 }
 
+// Raspberry sets state TRAIN_NOT_DETECTED manually
 void refreshHallSensors() {
-  HallDetection talon = static_cast<HallDetection>(digitalRead(HALL_SENSOR_TALON_PIN) ^ 1);
-  HallDetection direct = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DIRECT_PIN) ^ 1);
-  HallDetection deviee = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DEVIEE_PIN) ^ 1);
+  HallDetection hall_sensor_talon_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_TALON_PIN) ^ 1);
+  HallDetection hall_sensor_direct_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DIRECT_PIN) ^ 1);
+  HallDetection hall_sensor_deviee_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_DEVIEE_PIN) ^ 1);
 
-  if (talon == HallDetection::TRAIN_WAS_DETECTED) ModbusRTUServer.coilWrite(COIL_HALL_TALON, true);
-  if (direct == HallDetection::TRAIN_WAS_DETECTED) ModbusRTUServer.coilWrite(COIL_HALL_DIRECT, true);
-  if (deviee == HallDetection::TRAIN_WAS_DETECTED) ModbusRTUServer.coilWrite(COIL_HALL_DEVIEE, true);
+  if (hall_sensor_talon_state == HallDetection::TRAIN_WAS_DETECTED) {
+      ModbusRTUServer.coilWrite(COIL_HALL_TALON, true);
+  }
+  if (hall_sensor_direct_state == HallDetection::TRAIN_WAS_DETECTED) {
+      ModbusRTUServer.coilWrite(COIL_HALL_DIRECT, true);
+  }
+  if (hall_sensor_deviee_state == HallDetection::TRAIN_WAS_DETECTED) {
+      ModbusRTUServer.coilWrite(COIL_HALL_DEVIEE, true);
+  }
 }
 
 void setup() {
@@ -124,7 +134,7 @@ void setup() {
     }
   }
 
-  ModbusRTUServer.configureCoils(COIL_SIGNAL_TALON, 7);
+  ModbusRTUServer.configureCoils(0, 8);
 
   ModbusRTUServer.coilWrite(COIL_SIGNAL_TALON, false);
   ModbusRTUServer.coilWrite(COIL_SIGNAL_DIRECT, false);
@@ -133,17 +143,27 @@ void setup() {
   ModbusRTUServer.coilWrite(COIL_HALL_DIRECT, false);
   ModbusRTUServer.coilWrite(COIL_HALL_DEVIEE, false);
 
-  refreshTurnoutPosition();
+  tension_turnout = analogRead(TENSION_TURNOUT_PIN);
+
+  if (tension_turnout >= TENSION_TURNOUT_THRESHOLD) {
+      turnout_position = TurnoutPosition::DIRECT;
+  } else {
+      turnout_position = TurnoutPosition::DEVIEE;
+  }
+
+  ModbusRTUServer.coilWrite(COIL_BLADE_ORDER, turnout_position == TurnoutPosition::DIRECT); // order at this point is still not given
+  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::DIRECT);
+
 }
 
 void loop() {
+  refreshTurnoutPosition();
+  refreshHallSensors();
+
   if (ModbusRTUServer.poll()) {
     applySignalsFromCoils();
     applyTurnoutFromCoil();
   }
-
-  refreshTurnoutPosition();
-  refreshHallSensors();
 
   delay(LOOP_DELAY_MS);
 }
