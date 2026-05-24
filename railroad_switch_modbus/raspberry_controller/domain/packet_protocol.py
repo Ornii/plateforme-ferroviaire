@@ -4,8 +4,8 @@ from enum import Enum
 
 
 class BladeCoil(Enum):
-    BLADE_COIL = 6
-    BLADE_COIL_FEEDBACK = 7
+    ORDER = 6
+    FEEDBACK = 7
 
 
 class HallCoil(Enum):

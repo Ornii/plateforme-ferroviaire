@@ -21,7 +21,7 @@ def set_aiguillage_for_train_passage(
         or train.objective_position == Position.TALON
     ) and aiguillage.position != AiguillePosition.DIRECT:
         arduino.client.write_coil(
-            BladeCoil.BLADE_COIL.value,
+            BladeCoil.ORDER.value,
             AiguillePosition.DIRECT.value == 1,
             device_id=arduino.id,
         )
@@ -32,7 +32,7 @@ def set_aiguillage_for_train_passage(
         and aiguillage.position != AiguillePosition.DEVIEE
     ):
         arduino.client.write_coil(
-            BladeCoil.BLADE_COIL.value,
+            BladeCoil.ORDER.value,
             AiguillePosition.DEVIEE.value == 1,
             device_id=arduino.id,
         )

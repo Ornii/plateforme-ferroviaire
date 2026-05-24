@@ -13,7 +13,7 @@ def refresh_aiguille_state(
     state_aiguille = int(
         bool(
             arduino.client.read_coils(
-                BladeCoil.BLADE_COIL_FEEDBACK.value, count=1, device_id=arduino.id
+                BladeCoil.FEEDBACK.value, count=1, device_id=arduino.id
             ).bits[0]
         )
     )
@@ -22,6 +22,6 @@ def refresh_aiguille_state(
 
 def read_aiguille_state(arduino: ArduinoModbusBridge) -> AiguillePosition:
     result = arduino.client.read_coils(
-        BladeCoil.BLADE_COIL_FEEDBACK.value, count=1, device_id=arduino.id
+        BladeCoil.FEEDBACK.value, count=1, device_id=arduino.id
     )
     return AiguillePosition(int(bool(result.bits[0])))
