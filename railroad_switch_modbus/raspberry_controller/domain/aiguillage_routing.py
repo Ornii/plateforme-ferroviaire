@@ -3,6 +3,7 @@ from time import sleep
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
 from domain.packet_protocol import (
     AiguillePosition,
+    BladeCoil,
     Position,
 )
 from domain.train_state import TrainState
@@ -19,12 +20,20 @@ def set_aiguillage_for_train_passage(
         train.objective_position == Position.DIRECT
         or train.objective_position == Position.TALON
     ) and aiguillage.position != AiguillePosition.DIRECT:
-        arduino.client.write_coil(arduino.id, AiguillePosition.DIRECT.value == 1)
+        arduino.client.write_coil(
+            BladeCoil.BLADE_COIL.value,
+            AiguillePosition.DIRECT.value == 1,
+            device_id=arduino.id,
+        )
         sleep(LOOP_DELAY_S)
 
     elif (
         train.objective_position == Position.DEVIEE
         and aiguillage.position != AiguillePosition.DEVIEE
     ):
-        arduino.client.write_coil(arduino.id, AiguillePosition.DEVIEE.value == 1)
+        arduino.client.write_coil(
+            BladeCoil.BLADE_COIL.value,
+            AiguillePosition.DEVIEE.value == 1,
+            device_id=arduino.id,
+        )
         sleep(LOOP_DELAY_S)

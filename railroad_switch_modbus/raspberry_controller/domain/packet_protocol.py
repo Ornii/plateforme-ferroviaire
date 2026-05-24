@@ -3,13 +3,15 @@ from __future__ import annotations
 from enum import Enum
 
 
-BLADE_COIL = 3
+class BladeCoil(Enum):
+    BLADE_COIL = 6
+    BLADE_COIL_FEEDBACK = 7
 
 
 class HallCoil(Enum):
-    TALON = 4
-    DIRECT = 5
-    DEVIEE = 6
+    TALON = 3
+    DIRECT = 4
+    DEVIEE = 5
 
 
 class SignalCoil(Enum):

@@ -1,5 +1,5 @@
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
-from domain.packet_protocol import BLADE_COIL, AiguillePosition
+from domain.packet_protocol import AiguillePosition, BladeCoil
 
 
 class AiguilleState:
@@ -10,10 +10,18 @@ class AiguilleState:
 def refresh_aiguille_state(
     arduino: ArduinoModbusBridge, aiguille: AiguilleState
 ) -> None:
-    state_aiguille = int(bool(arduino.client.read_coils(BLADE_COIL, count=1, device_id=arduino.id).bits[0]))
+    state_aiguille = int(
+        bool(
+            arduino.client.read_coils(
+                BladeCoil.BLADE_COIL_FEEDBACK.value, count=1, device_id=arduino.id
+            ).bits[0]
+        )
+    )
     aiguille.position = AiguillePosition(state_aiguille)
 
 
 def read_aiguille_state(arduino: ArduinoModbusBridge) -> AiguillePosition:
-    result = arduino.client.read_coils(BLADE_COIL, count=1, device_id=arduino.id)
+    result = arduino.client.read_coils(
+        BladeCoil.BLADE_COIL_FEEDBACK.value, count=1, device_id=arduino.id
+    )
     return AiguillePosition(int(bool(result.bits[0])))
