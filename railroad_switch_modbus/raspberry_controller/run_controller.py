@@ -11,7 +11,7 @@ from infrastructure.hall_sensors.hall_sensors import (
     reset_hall_sensors_state,
 )
 
-arduino = ArduinoModbusBridge(id=1)
+arduino = ArduinoModbusBridge(id=0x08)
 
 
 train = TrainState(
