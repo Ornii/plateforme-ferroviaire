@@ -1,13 +1,12 @@
 from pymodbus.client import ModbusSerialClient
 
-
 MODBUS_ID = 0x08
 
 
 class ArduinoModbusBridge:
     def __init__(self, id: int = MODBUS_ID) -> None:
         self.client = ModbusSerialClient(
-            port="/dev/ttyUSB0",
+            port="/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0",
             baudrate=9600,
             bytesize=8,
             parity="N",
