@@ -14,5 +14,9 @@ class ArduinoModbusBridge:
             stopbits=1,
             timeout=1,
         )
-        self.client.connect()
         self.id = id
+
+        if not self.client.connect():
+            raise ConnectionError(
+                f"Unable to connect to Arduino Modbus device {id} on {port}"
+            )
