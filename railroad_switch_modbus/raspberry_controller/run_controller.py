@@ -36,9 +36,9 @@ def main(
         refresh_hall_sensors_state(arduino, aiguillage.hall_sensors)
 
         if train.position == Position.FROG:
-            handle_train_entry_detection(train, aiguillage)
+            handle_train_exit_detection(train, aiguillage)
         else:
-            handle_train_exit_detection(arduino, train, aiguillage)
+            handle_train_entry_detection(arduino, train, aiguillage)
     reset_hall_sensors_state(arduino, aiguillage.hall_sensors)
     print("Train arrived")
 
