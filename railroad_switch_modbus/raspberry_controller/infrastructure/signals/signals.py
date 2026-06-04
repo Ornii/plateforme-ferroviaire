@@ -44,7 +44,10 @@ def set_signal_color(
 ) -> None:
     signal.color = signal_color
     signal_coil = signal.get_coil()
-    arduino.client.write_coil(signal_coil.value, True, device_id=arduino.id)
+    if signal_color == SignalColor.GREEN:
+        arduino.client.write_coil(signal_coil.value, True, device_id=arduino.id)
+    else:
+        arduino.client.write_coil(signal_coil.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
 
 
