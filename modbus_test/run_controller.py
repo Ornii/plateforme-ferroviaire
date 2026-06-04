@@ -3,7 +3,7 @@ from time import sleep
 from pymodbus.client import ModbusSerialClient
 
 MODBUS_ID = 0x08
-MODBUS_PORT = "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"
+MODBUS_PORT = "/dev/ttyUSB0"
 SIGNAL_COIL = 0
 DELAY = 1
 
@@ -26,6 +26,8 @@ try:
     sleep(DELAY)
     result = client.read_coils(SIGNAL_COIL, count=1, device_id=MODBUS_ID).bits[0]
     print(f"The result is {result}")
+    sleep(DELAY)
+    client.write_coil(SIGNAL_COIL, False, device_id=MODBUS_ID)
     sleep(DELAY)
 finally:
     client.close()
