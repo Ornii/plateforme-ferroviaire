@@ -43,6 +43,8 @@ const int TURNOUT_SERVO_DEVIEE_ANGLE = 30;
 const uint8_t MODBUS_ID = 0x08;
 const unsigned long BAUDRATE = 9600;
 const int LOOP_DELAY_MS = 50;
+const int TX_PIN = 1;
+const int RE_DE_pin = 13;
 
 constexpr uint16_t COIL_SIGNAL_TALON = 0;
 constexpr uint16_t COIL_SIGNAL_DIRECT = 1;
@@ -128,6 +130,7 @@ void setup() {
 
   servo_turnout.attach(SERVO_TURNOUT_PIN);
 
+  RS485.setPins(TX_PIN, RE_DE_pin, RE_DE_pin);
   if (!ModbusRTUServer.begin(MODBUS_ID, BAUDRATE)) {
     while (true) {
       delay(1);
