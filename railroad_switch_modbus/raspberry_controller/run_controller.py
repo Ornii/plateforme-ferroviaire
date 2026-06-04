@@ -39,9 +39,6 @@ def main(
     while train.position != train.objective_position:
         refresh_hall_sensors_state(arduino, aiguillage.hall_sensors)
 
-        refresh_aiguille_state(arduino, aiguillage.aiguillage)
-        set_aiguillage_for_train_passage(arduino, train, aiguillage.aiguillage)
-
         if train.position == Position.FROG:
             handle_train_entry_detection(train, aiguillage)
         else:
