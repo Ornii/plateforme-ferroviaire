@@ -26,9 +26,11 @@ def bootstrap_controller(
     )
     set_all_signals_green(arduino, aiguillage.signals)
     set_conflicting_signals_red(arduino, train, aiguillage.signals)
+
     refresh_aiguille_state(
         arduino, aiguillage.aiguillage
     )  # not necessary with init_position_aiguillage
     set_aiguillage_for_train_passage(arduino, train, aiguillage.aiguillage)
+
     reset_hall_sensors_state(arduino, aiguillage.hall_sensors)
     return aiguillage
