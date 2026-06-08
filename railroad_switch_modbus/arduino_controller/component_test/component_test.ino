@@ -47,54 +47,54 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Talon all HIGH");
-    digitalWrite(GREEN_LED_TALON_PIN, HIGH);
-    digitalWrite(RED_LED_TALON_PIN, HIGH);
-    delay(LOOP_DELAY_MS);
-    digitalWrite(GREEN_LED_TALON_PIN, LOW);
-    digitalWrite(RED_LED_TALON_PIN, LOW);
+    // Serial.println("Talon all HIGH");
+    // digitalWrite(GREEN_LED_TALON_PIN, HIGH);
+    // digitalWrite(RED_LED_TALON_PIN, HIGH);
+    // delay(LOOP_DELAY_MS);
+    // digitalWrite(GREEN_LED_TALON_PIN, LOW);
+    // digitalWrite(RED_LED_TALON_PIN, LOW);
 
-    Serial.println("Direct all HIGH");
-    digitalWrite(GREEN_LED_DIRECT_PIN, HIGH);
-    digitalWrite(RED_LED_DIRECT_PIN, HIGH);
-    delay(LOOP_DELAY_MS);
-    digitalWrite(GREEN_LED_DIRECT_PIN, LOW);
-    digitalWrite(RED_LED_DIRECT_PIN, LOW);
+    // Serial.println("Direct all HIGH");
+    // digitalWrite(GREEN_LED_DIRECT_PIN, HIGH);
+    // digitalWrite(RED_LED_DIRECT_PIN, HIGH);
+    // delay(LOOP_DELAY_MS);
+    // digitalWrite(GREEN_LED_DIRECT_PIN, LOW);
+    // digitalWrite(RED_LED_DIRECT_PIN, LOW);
 
-    Serial.println("Deviee all HIGH");
-    digitalWrite(GREEN_LED_DEVIEE_PIN, HIGH);
-    digitalWrite(RED_LED_DEVIEE_PIN, HIGH);
-    delay(LOOP_DELAY_MS);
-    digitalWrite(GREEN_LED_DEVIEE_PIN, LOW);
-    digitalWrite(RED_LED_DEVIEE_PIN, LOW);
+    // Serial.println("Deviee all HIGH");
+    // digitalWrite(GREEN_LED_DEVIEE_PIN, HIGH);
+    // digitalWrite(RED_LED_DEVIEE_PIN, HIGH);
+    // delay(LOOP_DELAY_MS);
+    // digitalWrite(GREEN_LED_DEVIEE_PIN, LOW);
+    // digitalWrite(RED_LED_DEVIEE_PIN, LOW);
 
-    Serial.println("Servo position 1");
-    servo_turnout.write(TURNOUT_SERVO_DEVIEE_ANGLE);
-    delay(LOOP_DELAY_MS);
+    // Serial.println("Servo position 1");
+    // servo_turnout.write(TURNOUT_SERVO_DEVIEE_ANGLE);
+    // delay(LOOP_DELAY_MS);
 
-    Serial.println("Servo position 2");
-    servo_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
-    delay(LOOP_DELAY_MS);
+    // Serial.println("Servo position 2");
+    // servo_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
+    // delay(LOOP_DELAY_MS);
 
     Serial.println("Mesured tension:");
     tension_turnout = analogRead(TENSION_TURNOUT_PIN);
     Serial.println(tension_turnout);
     delay(LOOP_DELAY_MS);
 
-    Serial.println("Mesured hall talon:");
-    hall_sensor_talon_state = digitalRead(HALL_SENSOR_TALON_PIN);
-    Serial.println(hall_sensor_talon_state);
-    delay(LOOP_DELAY_MS);
+    // Serial.println("Mesured hall talon:");
+    // hall_sensor_talon_state = digitalRead(HALL_SENSOR_TALON_PIN);
+    // Serial.println(hall_sensor_talon_state);
+    // delay(LOOP_DELAY_MS);
 
-    Serial.println("Mesured hall direct:");
-    hall_sensor_direct_state = digitalRead(HALL_SENSOR_DIRECT_PIN);
-    Serial.println(hall_sensor_direct_state);
-    delay(LOOP_DELAY_MS);
+    // Serial.println("Mesured hall direct:");
+    // hall_sensor_direct_state = digitalRead(HALL_SENSOR_DIRECT_PIN);
+    // Serial.println(hall_sensor_direct_state);
+    // delay(LOOP_DELAY_MS);
 
-    Serial.println("Mesured hall deviee:");
-    hall_sensor_deviee_state = digitalRead(HALL_SENSOR_DEVIEE_PIN);
-    Serial.println(hall_sensor_deviee_state);
-    delay(LOOP_DELAY_MS);
+    // Serial.println("Mesured hall deviee:");
+    // hall_sensor_deviee_state = digitalRead(HALL_SENSOR_DEVIEE_PIN);
+    // Serial.println(hall_sensor_deviee_state);
+    // delay(LOOP_DELAY_MS);
 
 
 }
