@@ -1,7 +1,7 @@
 from domain.packet_protocol import Position
 
 
-class TrainState:
+class Train:
     def __init__(
         self,
         init_position: Position,

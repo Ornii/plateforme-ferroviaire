@@ -1,14 +1,14 @@
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
-from domain.aiguillage_controller import JunctionState
+from domain.aiguillage_controller import Aiguillage
 from domain.packet_protocol import HallDetection
-from domain.train_state import TrainState
+from domain.train_state import Train
 from infrastructure.signals.signals import set_all_signals_green
 
 
 def handle_train_exit_detection(
     arduino: ArduinoModbusBridge,
-    train: TrainState,
-    aiguillage: JunctionState,
+    train: Train,
+    aiguillage: Aiguillage,
 ) -> None:
     for sensor in aiguillage.hall_sensors.values():
         if (

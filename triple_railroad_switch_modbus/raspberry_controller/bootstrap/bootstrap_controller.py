@@ -1,8 +1,8 @@
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
-from domain.aiguillage_controller import JunctionState
-from domain.aiguillage_routing import set_aiguillage_for_train_passage
-from domain.packet_protocol import SignalColor
-from domain.train_state import TrainState
+from domain.aiguillage_controller import Aiguillage
+from domain.aiguillage_routing import set_aiguilles_for_train_passage
+from domain.packet_protocol import AiguillePosition, SignalColor
+from domain.train_state import Train
 from infrastructure.aiguille.aiguille import (
     read_aiguille_state,
     refresh_aiguille_state,
@@ -14,12 +14,13 @@ from infrastructure.signals.signals import (
 )
 
 
-def bootstrap_controller(
-    train: TrainState, arduino: ArduinoModbusBridge
-) -> JunctionState:
-    init_position_aiguillage = read_aiguille_state(arduino)
-    aiguillage = JunctionState(
-        init_position_aiguillage,
+def bootstrap_controller(train: Train, arduino: ArduinoModbusBridge) -> Aiguillage:
+    init_position_aiguille_1 = read_aiguille_state(arduino, AiguillePosition.ID_1)
+    init_position_aiguille_2 = read_aiguille_state(arduino, AiguillePosition.ID_2)
+    aiguillage = Aiguillage(
+        init_position_aiguille_1,
+        init_position_aiguille_2,
+        SignalColor.GREEN,
         SignalColor.GREEN,
         SignalColor.GREEN,
         SignalColor.GREEN,
@@ -28,9 +29,15 @@ def bootstrap_controller(
     set_conflicting_signals_red(arduino, train, aiguillage.signals)
 
     refresh_aiguille_state(
-        arduino, aiguillage.aiguillage
-    )  # not necessary with init_position_aiguillage
-    set_aiguillage_for_train_passage(arduino, train, aiguillage.aiguillage)
+        arduino, aiguillage.aiguille_1
+    )  # not necessary with init_position_aiguillage_1
+    refresh_aiguille_state(
+        arduino, aiguillage.aiguille_2
+    )  # not necessary with init_position_aiguillage_2
+
+    set_aiguilles_for_train_passage(
+        arduino, train, aiguillage.aiguille_1, aiguillage.aiguille_2
+    )
 
     reset_hall_sensors_state(arduino, aiguillage.hall_sensors)
     return aiguillage
