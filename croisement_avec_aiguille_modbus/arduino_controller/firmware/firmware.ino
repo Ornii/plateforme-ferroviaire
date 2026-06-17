@@ -66,7 +66,7 @@ const int RE_DE_PIN = 15;
 
 
 Servo servo_turnout;
-TurnoutPosition turnout_position = TurnoutPosition::1;
+TurnoutPosition turnout_position = TurnoutPosition::DROITE;
 int tension_turnout = 0;
 
 
@@ -91,7 +91,7 @@ void applySignalsFromCoils() {
 void applyTurnoutFromCoil() {
   TurnoutPosition demanded = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE_ORDER));
   if (demanded != turnout_position) {
-    if (demanded == TurnoutPosition::1) {
+    if (demanded == TurnoutPosition::DROITE) {
       servo_turnout.write(TURNOUT_SERVO_ANGLE_GAUCHE);
     } else {
       servo_turnout.write(TURNOUT_SERVO_ANGLE_DROITE);
