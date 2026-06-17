@@ -1,7 +1,7 @@
 from time import sleep
 
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
-from domain.packet_protocol import HallCoil, HallDetection, Position
+from domain.packet_protocol import Coil, HallDetection, Position
 
 LOOP_DELAY_S = 0.05
 
@@ -23,11 +23,29 @@ def build_hall_sensors_map() -> dict[Position, HallSensorState]:
 def refresh_hall_sensors_state(
     arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensorState]
 ) -> None:
-    state_talon = int(bool(arduino.client.read_coils(HallCoil.TALON.value, count=1, device_id=arduino.id).bits[0]))
+    state_talon = int(
+        bool(
+            arduino.client.read_coils(
+                Coil.HALL_TALON.value, count=1, device_id=arduino.id
+            ).bits[0]
+        )
+    )
     sleep(LOOP_DELAY_S)
-    state_direct = int(bool(arduino.client.read_coils(HallCoil.DIRECT.value, count=1, device_id=arduino.id).bits[0]))
+    state_direct = int(
+        bool(
+            arduino.client.read_coils(
+                Coil.HALL_DIRECT.value, count=1, device_id=arduino.id
+            ).bits[0]
+        )
+    )
     sleep(LOOP_DELAY_S)
-    state_deviee = int(bool(arduino.client.read_coils(HallCoil.DEVIEE.value, count=1, device_id=arduino.id).bits[0]))
+    state_deviee = int(
+        bool(
+            arduino.client.read_coils(
+                Coil.HALL_DEVIEE.value, count=1, device_id=arduino.id
+            ).bits[0]
+        )
+    )
     sleep(LOOP_DELAY_S)
 
     hall_sensors[Position.TALON].state = HallDetection(state_talon)
@@ -38,11 +56,11 @@ def refresh_hall_sensors_state(
 def reset_hall_sensors_state(
     arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensorState]
 ):
-    arduino.client.write_coil(HallCoil.TALON.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_TALON.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
-    arduino.client.write_coil(HallCoil.DEVIEE.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_DEVIEE.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
-    arduino.client.write_coil(HallCoil.DIRECT.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_DIRECT.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
 
     hall_sensors[Position.TALON].state = HallDetection.TRAIN_NOT_DETECTED

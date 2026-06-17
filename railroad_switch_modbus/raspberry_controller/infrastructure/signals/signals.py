@@ -2,8 +2,8 @@ from time import sleep
 
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
 from domain.packet_protocol import (
+    Coil,
     Position,
-    SignalCoil,
     SignalColor,
 )
 from domain.train_state import TrainState
@@ -16,13 +16,13 @@ class SignalState:
         self.color = init_color
         self.position = position
 
-    def get_coil(self) -> SignalCoil:
+    def get_coil(self) -> Coil:
         if self.position == Position.DEVIEE:
-            return SignalCoil.DEVIEE
+            return Coil.SIGNAL_DEVIEE
         elif self.position == Position.DIRECT:
-            return SignalCoil.DIRECT
+            return Coil.SIGNAL_DIRECT
         else:
-            return SignalCoil.TALON
+            return Coil.SIGNAL_TALON
 
 
 def build_signals_map(
