@@ -14,56 +14,69 @@ class HallSensor:
 
 def build_hall_sensors_map() -> dict[Position, HallSensor]:
     hall_sensors = {}
-    hall_sensors[Position.TALON] = HallSensor(Position.TALON)
-    hall_sensors[Position.DIRECT] = HallSensor(Position.DIRECT)
-    hall_sensors[Position.DEVIEE] = HallSensor(Position.DEVIEE)
+    hall_sensors[Position.ID_1] = HallSensor(Position.ID_1)
+    hall_sensors[Position.ID_2] = HallSensor(Position.ID_2)
+    hall_sensors[Position.ID_3] = HallSensor(Position.ID_3)
+    hall_sensors[Position.ID_4] = HallSensor(Position.ID_4)
     return hall_sensors
 
 
 def refresh_hall_sensors_state(
     arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensor]
 ) -> None:
-    state_talon = int(
+    state_1 = int(
         bool(
             arduino.client.read_coils(
-                Coil.HALL_TALON.value, count=1, device_id=arduino.id
+                Coil.HALL_1.value, count=1, device_id=arduino.id
             ).bits[0]
         )
     )
     sleep(LOOP_DELAY_S)
-    state_direct = int(
+    state_2 = int(
         bool(
             arduino.client.read_coils(
-                Coil.HALL_DIRECT.value, count=1, device_id=arduino.id
+                Coil.HALL_2.value, count=1, device_id=arduino.id
             ).bits[0]
         )
     )
     sleep(LOOP_DELAY_S)
-    state_deviee = int(
+    state_3 = int(
         bool(
             arduino.client.read_coils(
-                Coil.HALL_DEVIEE.value, count=1, device_id=arduino.id
+                Coil.HALL_3.value, count=1, device_id=arduino.id
+            ).bits[0]
+        )
+    )
+    sleep(LOOP_DELAY_S)
+    state_4 = int(
+        bool(
+            arduino.client.read_coils(
+                Coil.HALL_4.value, count=1, device_id=arduino.id
             ).bits[0]
         )
     )
     sleep(LOOP_DELAY_S)
 
-    hall_sensors[Position.TALON].state = HallDetection(state_talon)
-    hall_sensors[Position.DIRECT].state = HallDetection(state_direct)
-    hall_sensors[Position.DEVIEE].state = HallDetection(state_deviee)
+    hall_sensors[Position.ID_1].state = HallDetection(state_1)
+    hall_sensors[Position.ID_2].state = HallDetection(state_2)
+    hall_sensors[Position.ID_3].state = HallDetection(state_3)
+    hall_sensors[Position.ID_4].state = HallDetection(state_4)
 
 
 def reset_hall_sensors_state(
     arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensor]
 ):
-    arduino.client.write_coil(Coil.HALL_TALON.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_1.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
-    arduino.client.write_coil(Coil.HALL_DEVIEE.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_2.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
-    arduino.client.write_coil(Coil.HALL_DIRECT.value, False, device_id=arduino.id)
+    arduino.client.write_coil(Coil.HALL_3.value, False, device_id=arduino.id)
+    sleep(LOOP_DELAY_S)
+    arduino.client.write_coil(Coil.HALL_4.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)
 
-    hall_sensors[Position.TALON].state = HallDetection.TRAIN_NOT_DETECTED
-    hall_sensors[Position.DIRECT].state = HallDetection.TRAIN_NOT_DETECTED
-    hall_sensors[Position.DEVIEE].state = HallDetection.TRAIN_NOT_DETECTED
+    hall_sensors[Position.ID_1].state = HallDetection.TRAIN_NOT_DETECTED
+    hall_sensors[Position.ID_2].state = HallDetection.TRAIN_NOT_DETECTED
+    hall_sensors[Position.ID_3].state = HallDetection.TRAIN_NOT_DETECTED
+    hall_sensors[Position.ID_4].state = HallDetection.TRAIN_NOT_DETECTED
     sleep(LOOP_DELAY_S)

@@ -8,14 +8,16 @@ class Aiguillage:
     def __init__(
         self,
         aiguillage_init_position: AiguillePosition,
-        signals_init_color_talon: SignalColor,
-        signals_init_color_direct: SignalColor,
-        signals_init_color_deviee: SignalColor,
+        signals_init_color_1: SignalColor,
+        signals_init_color_2: SignalColor,
+        signals_init_color_3: SignalColor,
+        signals_init_color_4: SignalColor,
     ) -> None:
         self.aiguillage = Aiguille(aiguillage_init_position)
         self.signals = build_signals_map(
-            signals_init_color_talon,
-            signals_init_color_direct,
-            signals_init_color_deviee,
+            signals_init_color_1,
+            signals_init_color_2,
+            signals_init_color_3,
+            signals_init_color_4,
         )
         self.hall_sensors = build_hall_sensors_map()

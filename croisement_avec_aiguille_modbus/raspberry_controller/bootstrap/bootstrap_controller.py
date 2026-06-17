@@ -21,6 +21,7 @@ def bootstrap_controller(train: Train, arduino: ArduinoModbusBridge) -> Aiguilla
         SignalColor.GREEN,
         SignalColor.GREEN,
         SignalColor.GREEN,
+        SignalColor.GREEN,
     )
     set_all_signals_green(arduino, aiguillage.signals)
     set_conflicting_signals_red(arduino, train, aiguillage.signals)

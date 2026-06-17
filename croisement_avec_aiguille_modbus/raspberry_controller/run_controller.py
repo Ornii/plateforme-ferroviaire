@@ -15,8 +15,8 @@ arduino = ArduinoModbusBridge(id=0x08)
 
 
 train = Train(
-    init_position=Position.TALON,
-    objective_position=Position.DEVIEE,
+    init_position=Position.ID_1,
+    objective_position=Position.ID_3,
 )
 
 if not is_routing_right(train):

@@ -17,23 +17,27 @@ class HallSensor:
         self.position = position
 
     def get_coil(self) -> Coil:
-        if self.position == Position.DEVIEE:
-            return Coil.SIGNAL_DEVIEE
-        elif self.position == Position.DIRECT:
-            return Coil.SIGNAL_DIRECT
+        if self.position == Position.ID_1:
+            return Coil.SIGNAL_1
+        elif self.position == Position.ID_2:
+            return Coil.SIGNAL_2
+        elif self.position == Position.ID_3:
+            return Coil.SIGNAL_3
         else:
-            return Coil.SIGNAL_TALON
+            return Coil.SIGNAL_4
 
 
 def build_signals_map(
-    init_color_talon: SignalColor,
-    init_color_direct: SignalColor,
-    init_color_deviee: SignalColor,
+    init_color_1: SignalColor,
+    init_color_2: SignalColor,
+    init_color_3: SignalColor,
+    init_color_4: SignalColor,
 ) -> dict[Position, HallSensor]:
     signals = {}
-    signals[Position.TALON] = HallSensor(init_color_talon, Position.TALON)
-    signals[Position.DIRECT] = HallSensor(init_color_direct, Position.DIRECT)
-    signals[Position.DEVIEE] = HallSensor(init_color_deviee, Position.DEVIEE)
+    signals[Position.ID_1] = HallSensor(init_color_1, Position.ID_1)
+    signals[Position.ID_2] = HallSensor(init_color_2, Position.ID_2)
+    signals[Position.ID_3] = HallSensor(init_color_3, Position.ID_3)
+    signals[Position.ID_3] = HallSensor(init_color_4, Position.ID_4)
     return signals
 
 

@@ -5,18 +5,31 @@ from domain.train_state import Train
 def is_routing_right(train: Train) -> bool:
     return (
         (
-            train.init_position == Position.DEVIEE
-            and (train.objective_position == Position.TALON)
-        )
-        or (
-            train.init_position == Position.DIRECT
-            and (train.objective_position == Position.TALON)
-        )
-        or (
-            train.init_position == Position.TALON
+            train.init_position == Position.ID_1
             and (
-                train.objective_position == Position.DIRECT
-                or train.objective_position == Position.DEVIEE
+                train.objective_position == Position.ID_2
+                or train.objective_position == Position.ID_3
+            )
+        )
+        or (
+            train.init_position == Position.ID_2
+            and (
+                train.objective_position == Position.ID_1
+                or train.objective_position == Position.ID_4
+            )
+        )
+        or (
+            train.init_position == Position.ID_3
+            and (
+                train.objective_position == Position.ID_1
+                or train.objective_position == Position.ID_4
+            )
+        )
+        or (
+            train.init_position == Position.ID_4
+            and (
+                train.objective_position == Position.ID_2
+                or train.objective_position == Position.ID_3
             )
         )
     )
