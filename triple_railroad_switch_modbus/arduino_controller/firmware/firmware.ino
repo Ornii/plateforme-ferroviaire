@@ -72,9 +72,11 @@ const int RE_DE_PIN = 16;
 
 Servo servo_1_turnout;
 Servo servo_2_turnout;
+
 TurnoutPosition turnout_1_position = TurnoutPosition::DIRECT;
-int tension_turnout_1 = 0;
 TurnoutPosition turnout_2_position = TurnoutPosition::DIRECT;
+
+int tension_turnout_1 = 0;
 int tension_turnout_2 = 0;
 
 
@@ -98,7 +100,7 @@ void applySignalsFromCoils() {
 
 void applyTurnoutFromCoil() {
   TurnoutPosition demanded_blade_1 = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE_1_ORDER));
-  TurnoutPosition demanded_blade_2 = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE_2_ORDER));
+
   if (demanded_blade_1 != turnout_1_position) {
     if (demanded_blade_1 == TurnoutPosition::DIRECT) {
       servo_1_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
@@ -107,6 +109,9 @@ void applyTurnoutFromCoil() {
     }
     turnout_1_position = demanded_blade_1;
   }
+
+  TurnoutPosition demanded_blade_2 = static_cast<TurnoutPosition>(ModbusRTUServer.coilRead(COIL_BLADE_2_ORDER));
+
   if (demanded_blade_2 != turnout_2_position) {
     if (demanded_blade_2 == TurnoutPosition::DIRECT) {
       servo_2_turnout.write(TURNOUT_SERVO_DIRECT_ANGLE);
@@ -207,6 +212,9 @@ void setup() {
       turnout_1_position = TurnoutPosition::DEVIEE;
   }
 
+  ModbusRTUServer.coilWrite(COIL_BLADE_1_ORDER, turnout_1_position == TurnoutPosition::DIRECT); // order at this point could be not given
+  ModbusRTUServer.coilWrite(COIL_BLADE_1_FEEDBACK, turnout_1_position == TurnoutPosition::DIRECT);
+
   tension_turnout_2 = analogRead(TENSION_TURNOUT_2_PIN);
 
   if (tension_turnout_2 >= TENSION_TURNOUT_THRESHOLD) {
@@ -214,9 +222,6 @@ void setup() {
   } else {
       turnout_2_position = TurnoutPosition::DEVIEE;
   }
-
-  ModbusRTUServer.coilWrite(COIL_BLADE_1_ORDER, turnout_1_position == TurnoutPosition::DIRECT); // order at this point could be not given
-  ModbusRTUServer.coilWrite(COIL_BLADE_1_FEEDBACK, turnout_1_position == TurnoutPosition::DIRECT);
 
   ModbusRTUServer.coilWrite(COIL_BLADE_2_ORDER, turnout_2_position == TurnoutPosition::DIRECT); // order at this point could be not given
   ModbusRTUServer.coilWrite(COIL_BLADE_2_FEEDBACK, turnout_2_position == TurnoutPosition::DIRECT);
