@@ -193,7 +193,7 @@ void setup() {
     }
   }
 
-  ModbusRTUServer.configureCoils(0, 14);
+  ModbusRTUServer.configureCoils(0, 12);
 
   ModbusRTUServer.coilWrite(COIL_SIGNAL_TALON, false);
   ModbusRTUServer.coilWrite(COIL_SIGNAL_DIRECT, false);
