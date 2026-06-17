@@ -26,8 +26,9 @@ constexpr uint16_t COIL_BLADE_ORDER = 8;
 constexpr uint16_t COIL_BLADE_FEEDBACK = 9;
 
 enum class TurnoutPosition : uint8_t {
-  GAUCHE = 0,
   DROITE = 1,
+  GAUCHE = 0,
+
 };
 
 enum class HallDetection : uint8_t {
@@ -103,19 +104,20 @@ void refreshTurnoutPosition() {
   tension_turnout = analogRead(TENSION_TURNOUT_PIN);
 
   if (tension_turnout >= TENSION_TURNOUT_THRESHOLD) {
-    turnout_position = TurnoutPosition::1;
+    turnout_position = TurnoutPosition::DROITE;
   } else {
-    turnout_position = TurnoutPosition::3;
+    turnout_position = TurnoutPosition::GAUCHE;
   }
 
-  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::1);
+  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::DROITE);
 }
 
 // Raspberry sets state TRAIN_NOT_DETECTED manually
 void refreshHallSensors() {
-  HallDetection hall_sensor_talon_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_TALON_PIN) ^ 1);
   HallDetection hall_sensor_1_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_1_PIN) ^ 1);
+  HallDetection hall_sensor_2_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_2_PIN) ^ 1);
   HallDetection hall_sensor_3_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_3_PIN) ^ 1);
+  HallDetection hall_sensor_4_state = static_cast<HallDetection>(digitalRead(HALL_SENSOR_4_PIN) ^ 1);
 
   if (hall_sensor_1_state == HallDetection::TRAIN_WAS_DETECTED) {
       ModbusRTUServer.coilWrite(COIL_HALL_1, true);
@@ -170,13 +172,13 @@ void setup() {
   tension_turnout = analogRead(TENSION_TURNOUT_PIN);
 
   if (tension_turnout >= TENSION_TURNOUT_THRESHOLD) {
-      turnout_position = TurnoutPosition::1;
+      turnout_position = TurnoutPosition::DROITE;
   } else {
-      turnout_position = TurnoutPosition::3;
+      turnout_position = TurnoutPosition::GAUCHE;
   }
 
-  ModbusRTUServer.coilWrite(COIL_BLADE_ORDER, turnout_position == TurnoutPosition::1); // order at this point is still not given
-  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::1);
+  ModbusRTUServer.coilWrite(COIL_BLADE_ORDER, turnout_position == TurnoutPosition::DROITE); // order at this point is still not given
+  ModbusRTUServer.coilWrite(COIL_BLADE_FEEDBACK, turnout_position == TurnoutPosition::DROITE);
 
 }
 
