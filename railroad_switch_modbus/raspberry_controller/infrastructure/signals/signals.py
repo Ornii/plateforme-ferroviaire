@@ -6,12 +6,12 @@ from domain.packet_protocol import (
     Position,
     SignalColor,
 )
-from domain.train_state import TrainState
+from domain.train_state import Train
 
 LOOP_DELAY_S = 0.05
 
 
-class SignalState:
+class HallSensor:
     def __init__(self, init_color: SignalColor, position: Position) -> None:
         self.color = init_color
         self.position = position
@@ -29,17 +29,17 @@ def build_signals_map(
     init_color_talon: SignalColor,
     init_color_direct: SignalColor,
     init_color_deviee: SignalColor,
-) -> dict[Position, SignalState]:
+) -> dict[Position, HallSensor]:
     signals = {}
-    signals[Position.TALON] = SignalState(init_color_talon, Position.TALON)
-    signals[Position.DIRECT] = SignalState(init_color_direct, Position.DIRECT)
-    signals[Position.DEVIEE] = SignalState(init_color_deviee, Position.DEVIEE)
+    signals[Position.TALON] = HallSensor(init_color_talon, Position.TALON)
+    signals[Position.DIRECT] = HallSensor(init_color_direct, Position.DIRECT)
+    signals[Position.DEVIEE] = HallSensor(init_color_deviee, Position.DEVIEE)
     return signals
 
 
 def set_signal_color(
     arduino: ArduinoModbusBridge,
-    signal: SignalState,
+    signal: HallSensor,
     signal_color: SignalColor,
 ) -> None:
     signal.color = signal_color
@@ -52,7 +52,7 @@ def set_signal_color(
 
 
 def set_all_signals_green(
-    arduino: ArduinoModbusBridge, signals: dict[Position, SignalState]
+    arduino: ArduinoModbusBridge, signals: dict[Position, HallSensor]
 ) -> None:
     for position in Position:
         if position != Position.FROG:
@@ -61,8 +61,8 @@ def set_all_signals_green(
 
 def set_conflicting_signals_red(
     arduino: ArduinoModbusBridge,
-    train: TrainState,
-    signals: dict[Position, SignalState],
+    train: Train,
+    signals: dict[Position, HallSensor],
 ):
     for position in Position:
         if position != train.position and position != Position.FROG:

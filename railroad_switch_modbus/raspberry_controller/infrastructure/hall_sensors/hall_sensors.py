@@ -6,22 +6,22 @@ from domain.packet_protocol import Coil, HallDetection, Position
 LOOP_DELAY_S = 0.05
 
 
-class HallSensorState:
+class HallSensor:
     def __init__(self, position: Position) -> None:
         self.position = position
         self.state = HallDetection.TRAIN_NOT_DETECTED
 
 
-def build_hall_sensors_map() -> dict[Position, HallSensorState]:
+def build_hall_sensors_map() -> dict[Position, HallSensor]:
     hall_sensors = {}
-    hall_sensors[Position.TALON] = HallSensorState(Position.TALON)
-    hall_sensors[Position.DIRECT] = HallSensorState(Position.DIRECT)
-    hall_sensors[Position.DEVIEE] = HallSensorState(Position.DEVIEE)
+    hall_sensors[Position.TALON] = HallSensor(Position.TALON)
+    hall_sensors[Position.DIRECT] = HallSensor(Position.DIRECT)
+    hall_sensors[Position.DEVIEE] = HallSensor(Position.DEVIEE)
     return hall_sensors
 
 
 def refresh_hall_sensors_state(
-    arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensorState]
+    arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensor]
 ) -> None:
     state_talon = int(
         bool(
@@ -54,7 +54,7 @@ def refresh_hall_sensors_state(
 
 
 def reset_hall_sensors_state(
-    arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensorState]
+    arduino: ArduinoModbusBridge, hall_sensors: dict[Position, HallSensor]
 ):
     arduino.client.write_coil(Coil.HALL_TALON.value, False, device_id=arduino.id)
     sleep(LOOP_DELAY_S)

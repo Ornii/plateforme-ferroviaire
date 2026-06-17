@@ -1,8 +1,8 @@
 from communication.arduino_modbus_bridge import ArduinoModbusBridge
-from domain.aiguillage_controller import JunctionState
+from domain.aiguillage_controller import Aiguillage
 from domain.aiguillage_routing import set_aiguillage_for_train_passage
 from domain.packet_protocol import SignalColor
-from domain.train_state import TrainState
+from domain.train_state import Train
 from infrastructure.aiguille.aiguille import (
     read_aiguille_state,
     refresh_aiguille_state,
@@ -14,11 +14,9 @@ from infrastructure.signals.signals import (
 )
 
 
-def bootstrap_controller(
-    train: TrainState, arduino: ArduinoModbusBridge
-) -> JunctionState:
+def bootstrap_controller(train: Train, arduino: ArduinoModbusBridge) -> Aiguillage:
     init_position_aiguillage = read_aiguille_state(arduino)
-    aiguillage = JunctionState(
+    aiguillage = Aiguillage(
         init_position_aiguillage,
         SignalColor.GREEN,
         SignalColor.GREEN,

@@ -6,14 +6,14 @@ from domain.packet_protocol import (
     Coil,
     Position,
 )
-from domain.train_state import TrainState
-from infrastructure.aiguille.aiguille import AiguilleState
+from domain.train_state import Train
+from infrastructure.aiguille.aiguille import Aiguille
 
 LOOP_DELAY_S = 0.05
 
 
 def set_aiguillage_for_train_passage(
-    arduino: ArduinoModbusBridge, train: TrainState, aiguillage: AiguilleState
+    arduino: ArduinoModbusBridge, train: Train, aiguillage: Aiguille
 ) -> None:
 
     if (

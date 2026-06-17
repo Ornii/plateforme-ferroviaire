@@ -2,14 +2,12 @@ from communication.arduino_modbus_bridge import ArduinoModbusBridge
 from domain.packet_protocol import AiguillePosition, Coil
 
 
-class AiguilleState:
+class Aiguille:
     def __init__(self, init_position: AiguillePosition) -> None:
         self.position: AiguillePosition = init_position
 
 
-def refresh_aiguille_state(
-    arduino: ArduinoModbusBridge, aiguille: AiguilleState
-) -> None:
+def refresh_aiguille_state(arduino: ArduinoModbusBridge, aiguille: Aiguille) -> None:
     aiguille.position = read_aiguille_state(arduino)
 
 
