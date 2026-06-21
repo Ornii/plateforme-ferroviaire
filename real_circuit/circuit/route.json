@@ -1,0 +1,70 @@
+{
+  "aiguillage": [
+    {
+      "position_entree": "talon",
+      "positions_sortie": ["deviee", "direct"]
+    },
+    {
+      "position_entree": "deviee",
+      "positions_sortie": ["talon"]
+    },
+    {
+      "position_entree": "direct",
+      "positions_sortie": ["talon"]
+    }
+  ],
+  "croisement_sans_aiguille": [
+    {
+      "position_entree": "1",
+      "positions_sortie": ["3"]
+    },
+    {
+      "position_entree": "2",
+      "positions_sortie": ["4"]
+    },
+    {
+      "position_entree": "3",
+      "positions_sortie": ["1"]
+    },
+    {
+      "position_entree": "4",
+      "positions_sortie": ["2"]
+    }
+  ],
+  "croisement_avec_aiguille": [
+    {
+      "position_entree": "1",
+      "positions_sortie": ["2", "3"]
+    },
+    {
+      "position_entree": "2",
+      "positions_sortie": ["1", "4"]
+    },
+    {
+      "position_entree": "3",
+      "positions_sortie": ["1", "4"]
+    },
+    {
+      "position_entree": "4",
+      "positions_sortie": ["2", "3"]
+    }
+  ],
+  "aiguillage_triple": [
+    {
+      "position_entree": "talon",
+      "positions_sortie": ["droite", "milieu", "gauche"]
+    },
+    {
+      "position_entree": "droite",
+      "positions_sortie": ["talon"]
+    },
+    {
+      "position_entree": "milieu",
+      "positions_sortie": ["talon"]
+    },
+    {
+      "position_entree": "gauche",
+      "positions_sortie": ["talon"]
+    }
+  ]
+}

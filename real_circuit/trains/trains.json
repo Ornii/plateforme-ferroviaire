@@ -1,0 +1,20 @@
+[
+  {
+    "id": "train_1",
+    "init_position": "T1",
+    "objective_position": "T2",
+    "starting_time": 27
+  },
+  {
+    "id": "train_2",
+    "init_position": "T3",
+    "objective_position": "T4",
+    "starting_time": 0
+  },
+  {
+    "id": "train_3",
+    "init_position": "T2",
+    "objective_position": "T1",
+    "starting_time": 62
+  }
+]
