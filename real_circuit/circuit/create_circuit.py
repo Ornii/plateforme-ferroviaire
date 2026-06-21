@@ -138,7 +138,6 @@ def load_json_file(filename: str) -> Any:
 
 def create_circuit(
     circuit_filename: str,
-    id_position_filename: str,
     route_filename: str,
 ) -> Circuit:
 
@@ -162,5 +161,5 @@ def create_circuit(
 
 
 if __name__ == "__main__":
-    circuit = create_circuit("circuit.json", "id.json", "route.json")
+    circuit = create_circuit("circuit.json", "route.json")
     print(circuit.find_structure("C1"))
